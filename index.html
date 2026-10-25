@@ -1,0 +1,1798 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F1F5F4">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0D181B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Diario di un fumatore">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<title>Diario di un fumatore</title>
+<style>
+@font-face{font-family:'Bricolage Grotesque';font-weight:600;font-style:normal;font-display:swap;src:url(fonts/bricolage-grotesque-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Bricolage Grotesque';font-weight:700;font-style:normal;font-display:swap;src:url(fonts/bricolage-grotesque-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'Bricolage Grotesque';font-weight:800;font-style:normal;font-display:swap;src:url(fonts/bricolage-grotesque-latin-800-normal.woff2) format('woff2')}
+@font-face{font-family:'Hanken Grotesk';font-weight:400;font-style:normal;font-display:swap;src:url(fonts/hanken-grotesk-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Hanken Grotesk';font-weight:500;font-style:normal;font-display:swap;src:url(fonts/hanken-grotesk-latin-500-normal.woff2) format('woff2')}
+@font-face{font-family:'Hanken Grotesk';font-weight:600;font-style:normal;font-display:swap;src:url(fonts/hanken-grotesk-latin-600-normal.woff2) format('woff2')}
+@font-face{font-family:'Hanken Grotesk';font-weight:700;font-style:normal;font-display:swap;src:url(fonts/hanken-grotesk-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:400;font-style:normal;font-display:swap;src:url(fonts/ibm-plex-mono-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:'IBM Plex Mono';font-weight:500;font-style:normal;font-display:swap;src:url(fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2')}
+html{color-scheme:light dark}
+*{-webkit-tap-highlight-color:transparent}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+/* Layout: una colonna stretta da telefono, navigazione in basso a quattro voci.
+   Ogni sigaretta è disegnata come un bastoncino colorato in base all'importanza (1 scuro, 5 chiaro). */
+:root{
+  --bg:#F1F5F4; --surface:#FFFFFF; --surface-2:#E7EEEC;
+  --ink:#13262B; --ink-2:#47606A; --line:#D5DFDD; --line-strong:#9FB3B0;
+  --accent:#0B7A69; --accent-ink:#FFFFFF; --accent-soft:#D2ECE6;
+  --over:#B8204F; --filter:#D6B481;
+  --r1:#7C2A0B; --r2:#B8481A; --r3:#DE7A33; --r4:#EBA06A; --r5:#F3C6A0;
+  --r1t:#FFFFFF; --r2t:#FFFFFF; --r3t:#2A1206; --r4t:#2A1206; --r5t:#2A1206;
+  --lung:#F4B6BC; --lung-edge:#D98A94; --smoke:#7D8394; --smoke-2:#A3A8B5;
+  --font-display:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-body:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D181B; --surface:#152327; --surface-2:#1C2E33;
+    --ink:#E4EEED; --ink-2:#9AB0B3; --line:#263A3F; --line-strong:#3F5A60;
+    --accent:#3CC5AC; --accent-ink:#04201A; --accent-soft:#123A35;
+    --over:#FF7FA3; --filter:#B89560;
+    --r1:#FFB27A; --r2:#F0894E; --r3:#CC6A3E; --r4:#A0522F; --r5:#7A4026;
+    --r1t:#1F0D03; --r2t:#1F0D03; --r3t:#1F0D03; --r4t:#FFF4EC; --r5t:#FFF4EC;
+    --lung:#C9737F; --lung-edge:#E59AA5; --smoke:#C3C7D2; --smoke-2:#8E93A1;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D181B; --surface:#152327; --surface-2:#1C2E33;
+  --ink:#E4EEED; --ink-2:#9AB0B3; --line:#263A3F; --line-strong:#3F5A60;
+  --accent:#3CC5AC; --accent-ink:#04201A; --accent-soft:#123A35;
+  --over:#FF7FA3; --filter:#B89560;
+  --r1:#FFB27A; --r2:#F0894E; --r3:#CC6A3E; --r4:#A0522F; --r5:#7A4026;
+  --r1t:#1F0D03; --r2t:#1F0D03; --r3t:#1F0D03; --r4t:#FFF4EC; --r5t:#FFF4EC;
+  --lung:#C9737F; --lung-edge:#E59AA5; --smoke:#C3C7D2; --smoke-2:#8E93A1;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font:400 15px/1.45 var(--font-body);
+  padding-block:10px 104px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+html.lock,html.lock body{overflow:hidden}
+.wrap{max-width:520px;margin:0 auto}
+h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:30px;line-height:1.05;font-weight:700}
+h2{font-size:19px;line-height:1.15;font-weight:650}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:10px 0 14px}
+.demo{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--accent-soft);color:var(--ink);padding:10px 12px;border-radius:10px;margin-bottom:10px;font-size:13.5px}
+.demo span{min-width:0}
+
+/* Pulsanti */
+.btn{min-height:48px;padding:0 18px;border-radius:12px;border:1.5px solid var(--line-strong);background:transparent;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:disabled{opacity:.4;cursor:not-allowed}
+.btn.danger{border-color:var(--over);color:var(--over)}
+.btn.danger.armed{background:var(--over);color:var(--surface)}
+.btn.ghost{border-color:transparent;color:var(--ink-2)}
+.btn.small{min-height:40px;padding:0 14px;font-size:14px}
+.btn.block{width:100%}
+
+/* Oggi */
+.today{padding:4px 0 6px}
+.big{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.num{font-family:var(--font-display);font-weight:800;font-size:92px;line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.cap{font-size:15px;color:var(--ink-2);font-weight:500}
+.strip{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 12px;min-height:46px}
+.stick{width:12px;height:46px;border-radius:2px 2px 3px 3px;background:linear-gradient(to top,var(--filter) 0 24%,var(--c) 24% 100%)}
+.stick.over{outline:2px solid var(--over);outline-offset:1px}
+.slot{width:12px;height:46px;border-radius:2px 2px 3px 3px;border:1.5px dashed var(--line-strong)}
+.status{font-weight:600}
+.status.over{color:var(--over)}
+.meta{color:var(--ink-2);font-size:14px;margin-top:2px}
+.cta{margin:18px 0 6px;min-height:58px;font-size:17px}
+.sec{margin-top:26px}
+.sec>h2{margin-bottom:6px}
+.list{border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:56px 1fr 34px;align-items:center;gap:10px;width:100%;min-height:52px;padding:6px 0;background:none;border:0;border-bottom:1px solid var(--line);text-align:left}
+.row .t{font-family:var(--font-mono);font-size:15px;font-variant-numeric:tabular-nums}
+.row .p{min-width:0;overflow-wrap:anywhere}
+.badge{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.b1{background:var(--r1);color:var(--r1t)} .b2{background:var(--r2);color:var(--r2t)} .b3{background:var(--r3);color:var(--r3t)} .b4{background:var(--r4);color:var(--r4t)} .b5{background:var(--r5);color:var(--r5t)}
+.empty{padding:22px 0;color:var(--ink-2)}
+.empty b{display:block;color:var(--ink);font-family:var(--font-display);font-size:18px;margin-bottom:4px}
+.setup{margin-top:24px;padding:16px;background:var(--surface);border-radius:12px}
+.setup h2{margin-bottom:4px}
+.setup p{color:var(--ink-2);font-size:14px;margin-bottom:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fld>span{font-size:13px;color:var(--ink-2);font-weight:600}
+input[type=text],input[type=number],input[type=date],input[type=time]{
+  width:100%;min-height:48px;padding:0 12px;border-radius:10px;border:1.5px solid var(--line-strong);
+  background:var(--bg);color:var(--ink);font:inherit;font-size:16px;min-width:0}
+.demo-cta{margin-top:14px}
+.tag{display:inline-block;margin-left:8px;padding:1px 9px;border-radius:999px;background:var(--accent-soft);color:var(--ink);font-size:12.5px;font-weight:600;white-space:nowrap}
+.kind{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface-2);padding:4px;border-radius:12px;margin-bottom:14px}
+.kind button{min-height:44px;border:0;border-radius:9px;background:transparent;font-weight:600;color:var(--ink-2)}
+.kind button[aria-checked=true]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.qm{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.qm .chip{min-height:40px;padding:0 14px}
+
+/* Storico */
+.day{border-bottom:1px solid var(--line)}
+.day-head{display:grid;grid-template-columns:112px 1fr auto;align-items:center;gap:10px;width:100%;min-height:56px;background:none;border:0;text-align:left;padding:6px 0}
+.day-head .dl{font-weight:600}
+.day-head .dl small{display:block;font-weight:400;color:var(--ink-2);font-size:12.5px}
+.mini{display:flex;flex-wrap:wrap;gap:2px;align-items:flex-end;min-width:0}
+.mini i{width:4px;height:20px;border-radius:1px;background:var(--c)}
+.dc{font-family:var(--font-display);font-weight:700;font-size:24px;font-variant-numeric:tabular-nums;min-width:28px;text-align:right}
+.dc.zero{color:var(--accent)}
+.day-body{padding:0 0 10px}
+.day-body .row{border-bottom:1px solid var(--line)}
+.day-body .row:last-child{border-bottom:0}
+
+/* Analisi */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid var(--line-strong);background:transparent;font-weight:600}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chart{width:100%;height:auto;display:block;margin-top:8px}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .ax{fill:var(--ink-2);font:500 9.5px var(--font-mono)}
+.chart .ax-b{fill:var(--ink);font:600 9.5px var(--font-mono)}
+.chart .lim{stroke:var(--accent);stroke-width:1.5;stroke-dasharray:5 3}
+.chart .base{stroke:var(--ink-2);stroke-width:1.2;stroke-dasharray:1.5 3}
+.chart .zero{fill:var(--accent)}
+.chart .seg{stroke:var(--bg);stroke-width:.8}
+.chart .f1{fill:var(--r1)}.chart .f2{fill:var(--r2)}.chart .f3{fill:var(--r3)}.chart .f4{fill:var(--r4)}.chart .f5{fill:var(--r5)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-2);margin-top:6px}
+.legend .sw{display:inline-block;width:18px;vertical-align:middle;margin-right:6px}
+.sw.l{border-top:2px dashed var(--accent)}
+.sw.b{border-top:2px dotted var(--ink-2)}
+.sw.z{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.ramp{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--ink-2);margin-top:8px;flex-wrap:wrap}
+.ramp b{width:24px;height:24px;border-radius:5px;display:grid;place-items:center;font-size:12px}
+.ramp span{margin:0 4px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:16px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stats div{padding:12px 10px 12px 0;min-width:0}
+.stats div+div{padding-left:12px;border-left:1px solid var(--line)}
+.stats b{display:block;font-family:var(--font-display);font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stats span{font-size:12.5px;color:var(--ink-2)}
+.insights{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.insights li{padding-left:14px;border-left:3px solid var(--accent)}
+.hrow{display:grid;grid-template-columns:minmax(78px,32%) 1fr 30px;align-items:center;gap:10px;min-height:44px;border-bottom:1px solid var(--line)}
+.hl{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.hl small{display:block;font-weight:400;color:var(--ink-2);font-size:12.5px}
+.hb{display:flex;height:16px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.hb i{display:block;height:100%;border-right:1px solid var(--bg)}
+.hn{font-family:var(--font-mono);text-align:right;font-variant-numeric:tabular-nums}
+
+/* Impostazioni */
+.form{display:grid;gap:14px}
+.help{font-size:13px;color:var(--ink-2)}
+.pchips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.pchip{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 4px 0 14px;border-radius:999px;background:var(--surface-2)}
+.pchip button{width:36px;height:36px;border:0;background:none;font-size:20px;line-height:1;color:var(--ink-2)}
+.addp{display:grid;grid-template-columns:1fr auto;gap:8px}
+.store{display:flex;align-items:center;gap:8px;font-size:14px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);flex:none}
+.dot.off{background:var(--line-strong)}
+
+/* Diario di un fumatore: schermata iniziale, polmoni, risparmio, diario, prodotti, backup */
+.onb{padding-bottom:24px}
+.onb h1{font-size:34px}
+.onb .lead{color:var(--ink-2);margin:10px 0 0;font-size:16px}
+.card{background:var(--surface);border-radius:14px;padding:16px;margin-top:16px}
+.card h2{margin-bottom:4px}
+.card>.help{margin:0 0 12px}
+.prods{display:grid;gap:8px;margin:10px 0 12px}
+.prod{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;background:var(--bg);border-radius:12px;padding:10px 12px}
+.prod b{display:block;overflow-wrap:anywhere}
+.prod small{color:var(--ink-2);font-size:13px;display:block}
+.prod .pa{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.prod .pa .btn{min-height:40px;padding:0 12px;font-size:14px}
+.tag.main{background:var(--accent);color:var(--accent-ink)}
+.kinds{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+.kinds button{min-height:46px;border-radius:10px;border:1.5px solid var(--line-strong);background:transparent;font-weight:600}
+.kinds button[aria-checked=true]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+select{width:100%;min-height:48px;padding:0 10px;border-radius:10px;border:1.5px solid var(--line-strong);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;min-width:0}
+textarea{width:100%;min-height:92px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line-strong);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;line-height:1.4;resize:vertical}
+.panel .fld input{margin-top:0}
+.pf{display:grid;gap:12px;margin-top:12px}
+.lungs{margin-top:18px;background:var(--surface);border-radius:18px;padding:14px 14px 16px;text-align:center}
+.lungs svg{width:100%;max-width:300px;height:auto;display:block;margin:0 auto}
+.lungs .lc{font-family:var(--font-display);font-weight:700;font-size:19px;margin-top:2px}
+.lungs .ls{color:var(--ink-2);font-size:13.5px;margin-top:2px}
+.lg-bar{height:8px;border-radius:999px;background:var(--surface-2);overflow:hidden;margin:10px auto 0;max-width:260px}
+.lg-bar i{display:block;height:100%;background:var(--smoke);border-radius:999px}
+@media (prefers-reduced-motion:no-preference){
+  .wv{animation:wave 7s linear infinite}
+  .wv2{animation:wave 11s linear infinite reverse}
+  @keyframes wave{from{transform:translateX(0)}to{transform:translateX(-50px)}}
+}
+.diary{display:grid;gap:12px;margin-top:8px}
+.diary .help{margin:0}
+.nn{display:block;color:var(--ink-2);font-size:12px;font-family:var(--font-mono)}
+.btns{display:grid;gap:8px;margin-top:10px}
+.note{padding:12px;border-radius:10px;background:var(--accent-soft);font-size:14px;margin-top:10px}
+.chart .nb{fill:var(--accent)}
+.chart .nbl{stroke:var(--ink-2);stroke-width:1.2;stroke-dasharray:1.5 3}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--accent-soft);font-size:12.5px;font-weight:600}
+
+.pro{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:11px;font-weight:700;letter-spacing:.04em;vertical-align:middle}
+.lockcard{display:block;width:100%;text-align:left;padding:14px 16px;border-radius:12px;border:1.5px dashed var(--line-strong);background:transparent}
+.lockcard b{display:block;font-family:var(--font-display);font-size:17px;margin-bottom:2px}
+.lockcard span:not(.pro){color:var(--ink-2);font-size:14px}
+.perks{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.perks li{padding-left:14px;border-left:3px solid var(--accent)}
+
+/* Palette di colori extra (versione Pro): si attivano con data-palette sull'elemento html */
+:root[data-palette="tramonto"]{--bg:#F6F1EF;--surface:#FDFCFC;--surface-2:#EBE3E0;--ink:#271811;--ink-2:#634E45;--line:#DED3CF;--line-strong:#967E73;--accent:#B8471E;--accent-ink:#FFFFFF;--accent-soft:#F1DCD5;--r1:#5D2713;--r1t:#FFFFFF;--r2:#98401F;--r2t:#FFFFFF;--r3:#C35128;--r3t:#FFFFFF;--r4:#E28E6F;--r4t:#251109;--r5:#EFC3B3;--r5t:#251109;}
+@media (prefers-color-scheme: dark){:root[data-palette="tramonto"]:not([data-theme="light"]){--bg:#1A120F;--surface:#261C17;--surface-2:#322520;--ink:#F3EBE8;--ink-2:#BDAEA8;--line:#40312B;--line-strong:#82695E;--accent:#D67551;--accent-ink:#1D0D07;--accent-soft:#42281F;--r1:#EBBEAD;--r1t:#210F08;--r2:#DC9074;--r2t:#210F08;--r3:#CE623B;--r3t:#210F08;--r4:#A34929;--r4t:#FFFFFF;--r5:#7A371F;--r5t:#FFFFFF;}}
+:root[data-palette="tramonto"][data-theme="dark"]{--bg:#1A120F;--surface:#261C17;--surface-2:#322520;--ink:#F3EBE8;--ink-2:#BDAEA8;--line:#40312B;--line-strong:#82695E;--accent:#D67551;--accent-ink:#1D0D07;--accent-soft:#42281F;--r1:#EBBEAD;--r1t:#210F08;--r2:#DC9074;--r2t:#210F08;--r3:#CE623B;--r3t:#210F08;--r4:#A34929;--r4t:#FFFFFF;--r5:#7A371F;--r5t:#FFFFFF;}
+:root[data-palette="lavanda"]{--bg:#F1EFF6;--surface:#FCFCFD;--surface-2:#E4E0EB;--ink:#191127;--ink-2:#504563;--line:#D4CFDE;--line-strong:#807396;--accent:#571EB8;--accent-ink:#FFFFFF;--accent-soft:#DFD5F1;--r1:#2E135D;--r1t:#FFFFFF;--r2:#4C1F98;--r2t:#FFFFFF;--r3:#6128C3;--r3t:#FFFFFF;--r4:#996FE2;--r4t:#130925;--r5:#C9B3EF;--r5t:#130925;}
+@media (prefers-color-scheme: dark){:root[data-palette="lavanda"]:not([data-theme="light"]){--bg:#130F1A;--surface:#1D1726;--surface-2:#262032;--ink:#ECE8F3;--ink-2:#B0A8BD;--line:#332B40;--line-strong:#6B5E82;--accent:#9D77DF;--accent-ink:#0F071D;--accent-soft:#2C1F42;--r1:#C4ADEB;--r1t:#110821;--r2:#9A74DC;--r2t:#110821;--r3:#713BCE;--r3t:#FFFFFF;--r4:#5629A3;--r4t:#FFFFFF;--r5:#401F7A;--r5t:#FFFFFF;}}
+:root[data-palette="lavanda"][data-theme="dark"]{--bg:#130F1A;--surface:#1D1726;--surface-2:#262032;--ink:#ECE8F3;--ink-2:#B0A8BD;--line:#332B40;--line-strong:#6B5E82;--accent:#9D77DF;--accent-ink:#0F071D;--accent-soft:#2C1F42;--r1:#C4ADEB;--r1t:#110821;--r2:#9A74DC;--r2t:#110821;--r3:#713BCE;--r3t:#FFFFFF;--r4:#5629A3;--r4t:#FFFFFF;--r5:#401F7A;--r5t:#FFFFFF;}
+:root[data-palette="oceano"]{--bg:#EFF2F6;--surface:#FCFCFD;--surface-2:#E0E6EB;--ink:#111C27;--ink-2:#455463;--line:#CFD6DE;--line-strong:#738596;--accent:#1E70B8;--accent-ink:#FFFFFF;--accent-soft:#D5E4F1;--r1:#133B5D;--r1t:#FFFFFF;--r2:#1F6098;--r2t:#FFFFFF;--r3:#287AC3;--r3t:#FFFFFF;--r4:#6FACE2;--r4t:#091825;--r5:#B3D3EF;--r5t:#091825;}
+@media (prefers-color-scheme: dark){:root[data-palette="oceano"]:not([data-theme="light"]){--bg:#0F141A;--surface:#171F26;--surface-2:#202932;--ink:#E8EDF3;--ink-2:#A8B2BD;--line:#2B3640;--line-strong:#5E7082;--accent:#5198D6;--accent-ink:#07131D;--accent-soft:#1F3242;--r1:#ADCEEB;--r1t:#081521;--r2:#74ACDC;--r2t:#081521;--r3:#3B89CE;--r3t:#081521;--r4:#296AA3;--r4t:#FFFFFF;--r5:#1F507A;--r5t:#FFFFFF;}}
+:root[data-palette="oceano"][data-theme="dark"]{--bg:#0F141A;--surface:#171F26;--surface-2:#202932;--ink:#E8EDF3;--ink-2:#A8B2BD;--line:#2B3640;--line-strong:#5E7082;--accent:#5198D6;--accent-ink:#07131D;--accent-soft:#1F3242;--r1:#ADCEEB;--r1t:#081521;--r2:#74ACDC;--r2t:#081521;--r3:#3B89CE;--r3t:#081521;--r4:#296AA3;--r4t:#FFFFFF;--r5:#1F507A;--r5t:#FFFFFF;}
+:root[data-palette="rosa"]{--bg:#F6EFF1;--surface:#FDFCFC;--surface-2:#EBE0E4;--ink:#271119;--ink-2:#634550;--line:#DECFD4;--line-strong:#967380;--accent:#B81E57;--accent-ink:#FFFFFF;--accent-soft:#F1D5DF;--r1:#5D132E;--r1t:#FFFFFF;--r2:#981F4C;--r2t:#FFFFFF;--r3:#C32861;--r3t:#FFFFFF;--r4:#E26F99;--r4t:#250913;--r5:#EFB3C9;--r5t:#250913;}
+@media (prefers-color-scheme: dark){:root[data-palette="rosa"]:not([data-theme="light"]){--bg:#1A0F13;--surface:#26171D;--surface-2:#322026;--ink:#F3E8EC;--ink-2:#BDA8B0;--line:#402B33;--line-strong:#825E6B;--accent:#DB6691;--accent-ink:#1D070F;--accent-soft:#421F2C;--r1:#EBADC4;--r1t:#210811;--r2:#DC749A;--r2t:#210811;--r3:#CE3B71;--r3t:#FFFFFF;--r4:#A32956;--r4t:#FFFFFF;--r5:#7A1F40;--r5t:#FFFFFF;}}
+:root[data-palette="rosa"][data-theme="dark"]{--bg:#1A0F13;--surface:#26171D;--surface-2:#322026;--ink:#F3E8EC;--ink-2:#BDA8B0;--line:#402B33;--line-strong:#825E6B;--accent:#DB6691;--accent-ink:#1D070F;--accent-soft:#421F2C;--r1:#EBADC4;--r1t:#210811;--r2:#DC749A;--r2t:#210811;--r3:#CE3B71;--r3t:#FFFFFF;--r4:#A32956;--r4t:#FFFFFF;--r5:#7A1F40;--r5t:#FFFFFF;}
+:root[data-palette="sabbia"]{--bg:#F4F3F0;--surface:#FDFDFC;--surface-2:#E9E6E2;--ink:#231D15;--ink-2:#5D564B;--line:#DBD7D2;--line-strong:#8F877A;--accent:#A75C1B;--accent-ink:#FFFFFF;--accent-soft:#F1E2D5;--r1:#5D3613;--r1t:#FFFFFF;--r2:#98581F;--r2t:#FFFFFF;--r3:#C37028;--r3t:#251609;--r4:#E2A46F;--r4t:#251609;--r5:#EFCFB3;--r5t:#251609;}
+@media (prefers-color-scheme: dark){:root[data-palette="sabbia"]:not([data-theme="light"]){--bg:#181511;--surface:#231F1A;--surface-2:#2E2A23;--ink:#F0EEEA;--ink-2:#B9B4AC;--line:#3C372F;--line-strong:#7B7265;--accent:#D68F51;--accent-ink:#1D1107;--accent-soft:#422F1F;--r1:#EBCAAD;--r1t:#211408;--r2:#DCA574;--r2t:#211408;--r3:#CE803B;--r3t:#211408;--r4:#A36229;--r4t:#FFFFFF;--r5:#7A491F;--r5t:#FFFFFF;}}
+:root[data-palette="sabbia"][data-theme="dark"]{--bg:#181511;--surface:#231F1A;--surface-2:#2E2A23;--ink:#F0EEEA;--ink-2:#B9B4AC;--line:#3C372F;--line-strong:#7B7265;--accent:#D68F51;--accent-ink:#1D1107;--accent-soft:#422F1F;--r1:#EBCAAD;--r1t:#211408;--r2:#DCA574;--r2t:#211408;--r3:#CE803B;--r3t:#211408;--r4:#A36229;--r4t:#FFFFFF;--r5:#7A491F;--r5t:#FFFFFF;}
+.swatches{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.swb{display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 12px;border-radius:12px;border:1.5px solid var(--line-strong);background:transparent;text-align:left;font-weight:600}
+.swb.on{border-color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.swb.lk{opacity:.7}
+.swd{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--line-strong)}
+
+/* Navigazione */
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1px solid var(--line);
+  padding:4px max(8px,env(safe-area-inset-left,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-right,0px))}
+nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:56px;background:none;border:0;color:var(--ink-2);font-size:11.5px;font-weight:600}
+nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button[aria-current=page]{color:var(--accent)}
+
+/* Scheda di inserimento */
+.sheet{position:fixed;inset:0;z-index:50}
+.scrim{position:absolute;inset:0;background:rgba(5,15,18,.55)}
+.panel{position:absolute;left:0;right:0;bottom:0;margin-inline:auto;max-width:560px;max-height:94%;overflow:auto;background:var(--surface);border-radius:18px 18px 0 0;
+  padding:10px max(16px,env(safe-area-inset-left,0px)) calc(18px + env(safe-area-inset-bottom,0px));outline:none}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--line-strong);margin:0 auto 12px}
+.panel h2{margin-bottom:14px}
+fieldset{border:0;margin:16px 0 0;padding:0;min-width:0}
+legend{padding:0;margin-bottom:8px;font-size:13px;color:var(--ink-2);font-weight:600}
+.panel input[type=text]{margin-top:10px}
+.chip.on.p{background:var(--ink)}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sc{min-height:56px;border-radius:10px;border:0;font-family:var(--font-display);font-weight:700;font-size:22px}
+.sc[aria-checked=true]{outline:3px solid var(--ink);outline-offset:2px}
+.ends{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2);margin-top:6px}
+.hint{min-height:22px;margin-top:8px;font-size:14px}
+.actions{display:grid;gap:8px;margin-top:20px}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:60;max-width:calc(100% - 32px);
+  background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:10px;font-weight:600;font-size:14px;text-align:center}
+@media (prefers-reduced-motion:no-preference){
+  .panel{animation:up .2s ease-out}
+  @keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+}
+@media (max-width:380px){
+  .num{font-size:78px}
+  .day-head{grid-template-columns:100px 1fr auto}
+}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<nav aria-label="Sezioni">
+  <button data-act="tab" data-tab="oggi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="10" width="14" height="4" rx="1"/><path d="M20 10v4M17 10v4"/><path d="M19 6c0-1.5 1-2 1-3.5M22 6c0-1.5 1-2 1-3.5" transform="translate(-2 0)"/></svg>Oggi</button>
+  <button data-act="tab" data-tab="storico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Storico</button>
+  <button data-act="tab" data-tab="analisi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>Analisi</button>
+  <button data-act="tab" data-tab="impostazioni"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Impostazioni</button>
+</nav>
+<div id="sheet" class="sheet" hidden></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- utilità ---------- */
+var $ = function(s,r){ return (r||document).querySelector(s); };
+var esc = function(s){ return String(s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+var pad = function(n){ return String(n).padStart(2,'0'); };
+var ymd = function(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
+var parseYmd = function(s){ var p=s.split('-').map(Number); return new Date(p[0],p[1]-1,p[2]); };
+var addDays = function(d,n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; };
+var hm = function(d){ return pad(d.getHours())+':'+pad(d.getMinutes()); };
+var fmtLong = new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long'});
+var fmtShort = new Intl.DateTimeFormat('it-IT',{weekday:'short',day:'numeric',month:'short'});
+var nf1 = new Intl.NumberFormat('it-IT',{maximumFractionDigits:1});
+var nf2 = new Intl.NumberFormat('it-IT',{maximumFractionDigits:2});
+var fmtDT = new Intl.DateTimeFormat('it-IT',{dateStyle:'medium',timeStyle:'short'});
+var eur = new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'});
+var newId = function(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); };
+var isVape = function(e){ return e.k==='v'; };
+var isCig = function(e){ return e.k!=='v'; };
+
+var LABELS = ['Indispensabile','Importante','Media','Poco importante','Superflua'];
+var HINTS = [
+  'Indispensabile: non ne avrei fatto a meno.',
+  'Importante: mi è pesato rinunciarci.',
+  'Media: mi andava, ma potevo aspettare.',
+  'Poco importante: più che altro per abitudine.',
+  'Superflua: è stato solo un gesto automatico.'
+];
+var DEFAULT_PLACES = ['Casa','Lavoro','Auto','Bar','Amici','Strada'];
+var LS_KEY = 'menofumo.v1';
+var KIND_NAME = {c:'Sigarette',h:'Heets',t:'Tabacco',e:'Sigaretta elettronica'};
+var HEETS_FLAVORS = ['Amber','Yellow','Turquoise','Bronze','Sienna','Purple Wave','Russet','Green Zing'];
+/* Nicotina per sigaretta (mg) dalla tabella dei livelli di emissione dell'Agenzia delle Dogane e dei Monopoli,
+   aggiornata al 2 dicembre 2019. Sono valori ISO da etichetta, non la nicotina realmente assorbita. */
+var CIG_DB = {"821":[["Bianca",0.3],["Blu",0.7],["Camouflage",0.7],["Rossa",0.9]],"Alluve'":[["Jade",0.6],["Original",0.5],["White",0.3]],"American Spirit":[["Original Blue",1.0],["Original Orange",0.4],["Original Yellow",0.6]],"Austin":[["Blue",0.6],["Red",0.8],["Verte",0.8]],"Benson & Hedges":[["Gold",0.9],["Blue",0.6],["Blue 100s",0.7],["Blue Super S",0.6],["Red",0.8],["Red 100s",0.8],["White",0.1],["White 100s",0.1],["Yellow",0.3],["Yellow 100s",0.4],["Yellow Super S",0.3]],"Bentley":[["Azure",0.5],["Classic",0.6]],"Black Devil":[["Black",0.5],["Pink",0.5],["Yellow",0.6]],"Burton":[["Original",0.8]],"Camel":[["Activate",0.6],["Activate Double",0.6],["Blue",0.6],["Blue 100s",0.7],["Compact Filters",0.7],["Connect Blue",0.5],["Essential Blue",0.6],["Orange",0.7],["Silver",0.3],["White",0.1],["Yellow",0.8],["Yellow 100s",0.8]],"Che":[["Classica",0.8],["Blanco",0.5]],"Chesterfield":[["Blue 100's",0.6],["Blue KS",0.6],["Caps Twice",0.6],["KS",0.7],["Red 100's",0.7],["Silver Blue",0.3]],"Chiaravalle":[["Burley & Virginia",0.7],["Virginia",0.7],["Virginia Bright",0.6]],"Corset":[["Breeze",0.7],["Chic Lilac",0.7],["Chic Pink",0.5],["Deux à Porter",0.7],["Lilac à Porter",0.4],["Mauve",0.7],["Mauve à Porter",0.7],["Pink",0.4]],"Davidoff":[["Blue",0.3],["Blush SSL-Line",0.3],["Breeze",0.6],["Classic",0.8],["Gold",0.6],["Gold SL Line",0.6],["Magenta SSL-Line",0.6]],"Diana":[["Azzurra 100's",0.3],["Azzurra KS",0.3],["Bianca",0.1],["Blu 100's",0.6],["Blu KS",0.6],["Rossa 100's",0.7],["Rossa KS",0.7],["SSL Blu",0.5]],"Dunhill":[["Blue",0.4],["Gold",0.3],["International",0.9],["Red",0.7]],"Elixyr":[["Blue",0.6],["Blue 100's",0.6],["Extreme Verte",0.6],["Red",0.8],["Red 100's",0.8],["Silver",0.4],["Verte",0.8],["Verte 100s",0.8]],"E-Mail":[["Red 4",0.4],["Red 8",0.7]],"Futura":[["Bianca",0.3],["Black S-Size",0.6],["Blu",0.6],["Classica",0.4],["Ghiaccio",0.4],["Gold S-Size",0.7],["Rossa",1.0],["White S-Size",0.4]],"Gauloises":[["Blondes Blu",0.8],["Blondes Gialla",0.4],["Blondes Rossa",0.6]],"Gitanes":[["Original",0.8],["Filtre",0.8]],"Giubek":[["Filtro",0.9]],"Glamour":[["Blues",0.3],["Pinks",0.5],["Secret",0.3]],"JPS":[["Original",0.8],["Blue",0.6],["Blue Stream",0.5],["Blue Stream 100",0.5],["Compact Blue Stream",0.4],["Red",0.8],["Red 100",0.8],["Silver",0.4],["Silver 100",0.4],["SSL-Line Silver",0.6],["SSL-Line White",0.4]],"Kent":[["Blue",0.6],["Surround",0.4]],"L&M":[["Blue Label KS",0.6],["Red Label KS",0.7]],"Lambert & Butler":[["King Size",0.9]],"Lido":[["Blu",0.6]],"Linda":[["Classica",0.9],["Azzurra",0.5],["Blu",0.7]],"Lucky Strike":[["Blue",0.6],["Blue Pocket",0.7],["Click 4 Mix",0.7],["Double Click",0.5],["Red",0.8],["Switch",0.6]],"Mademoiselle":[["La Blanche",0.3],["La Bleue",0.4],["La Rouge",0.5],["La Verte",0.5]],"Mark Adams":[["No. 1 Gold",0.5],["No. 1 Red",0.8],["No. 1 Gold 100's",0.5],["No. 1 M",0.8],["No. 1 Red 100's",0.8],["No. 1 Silver",0.4],["No. 1 White",0.1]],"Marlboro":[["100s",0.7],["Advance Touch",0.5],["Blue Advance",0.7],["Blue Line",0.4],["Fuse Beyond",0.5],["Gold 100s",0.7],["Gold KS",0.6],["Gold Line",0.5],["Gold Pocket Pack",0.5],["Gold Touch KS",0.6],["KS (rosse)",0.7],["Mix",0.6],["Platinum",0.1],["Pocket Pack",0.7],["Regular",0.7],["Silver Blue KS",0.3],["Silver Touch",0.4],["Touch",0.7]],"Mercedes":[["KS",0.7]],"Merit":[["Bay KS",0.5],["Bianca KS",0.1],["Blu 100's",0.3],["Blu KS",0.3],["Gialla 100's",0.6],["Gialla KS",0.5],["SSL",0.5]],"MS":[["Azzurre",0.6],["Bianche",0.1],["Bionde",0.8],["Bionde 100's",0.8],["Chiare",0.3],["Chiare 100's",0.5],["Classic",0.8],["Club",0.7],["Club Bianca",0.4],["Nazionali",0.7],["Rosse",0.8]],"Muratti":[["Ambassador Azure KS",0.5],["Ambassador Blue KS",0.6],["Ambassador Silver KS",0.3],["Azure 100S",0.5],["Red 100S",0.7],["SSL",0.4]],"News":[["Red",0.8]],"Peter Stuyvesant":[["Blue",0.3],["Blue 100's",0.4],["Gold",0.5],["Gold 100's",0.5],["Original",0.8],["Original 100's",0.8]],"Philip Morris":[["Azure",0.3],["Azure 100's",0.3],["Blue",0.6],["Blue 100's",0.6],["Classic SSL Blu",0.4],["Classic SSL Rossa",0.5],["Filter Kings",0.7],["Multifilter SSL Blu",0.4],["Multifilter SSL Rossa",0.5],["Red",0.7],["Red 100's",0.7],["SSL Beige",0.3],["SSL Blue",0.5],["White",0.1]],"Pueblo":[["Blue",0.6],["Classic",1.0],["GT",0.7],["Orange",0.4]],"R1":[["SL-Line",0.5]],"Rothmans":[["Classic Blue",0.7],["Classic Red",0.8],["Classic Red 100",0.8],["Classic Silver",0.4],["of London Blue 100",0.7],["of London Blue 20",0.7],["of London D Series Click",0.6],["of London Double Click 20S",0.5],["of London D-Series",0.6],["of London Intense Blue",0.7],["of London Silver 100",0.4],["of London Silver 20",0.4],["of London S-Series Blue",0.7],["of London S-Series Silver",0.3],["of London White 100",0.2],["of London White 20's",0.1],["R Classic Blue 100",0.7],["R Classic Silver 100",0.3]],"The King":[["Blue",0.6],["Blue 100's",0.6],["Capsule",0.6],["Red",0.8],["Red 100's",0.8],["Silver",0.4],["Silver 100's",0.4],["SSL Line Blue",0.6],["SSL Line Capsule",0.8],["SSL Line White",0.4]],"Virginia S.":[["Classica",0.6]],"Vogue":[["Bleue",0.6],["Classique Long Bleue",0.6],["Classique Long Lilas",0.3],["Classique Long Verte",0.6],["Lilas",0.4],["Verte",0.7]],"West":[["Blue",0.6],["Original",0.8]],"Winston":[["Blue",0.7],["Blue 100S",0.7],["Blue Super Line",0.6],["Classic",0.8],["Classic 100S",0.8],["Expand",0.6],["Silver",0.4],["Silver 100S",0.4],["Silver Super Line",0.4],["Wave",0.5],["White",0.1],["White Super Line",0.1],["XStyle Blue",0.5],["XStyle White",0.5]],"Yesmoke":[["Black",1.0],["Blue",0.3],["Emerald",0.8],["Red",0.8],["Silver",0.1],["White Emerald",0.4],["White Red",0.6]]};
+var BRANDS = Object.keys(CIG_DB).sort(function(a,b){ return a.toLowerCase().localeCompare(b.toLowerCase(),'it'); });
+
+/* ---------- stato ---------- */
+var state = {
+  days:{}, notes:{}, settings:defaultSettings(),
+  tab:'oggi', range:14, demo:false, demoData:null, openDay:null, mode:'local',
+  loading:false, onb:null, restore:null, backup:null, pendingRender:false,
+  pro:false, price:'', pw:false, drive:{connected:false,auto:true,at:null,err:null,manual:false}
+};
+var sheet = null, psheet = null;
+var col = null, dl = null;
+var chains = {}, noteTimers = {};
+var native = window.MenoAndroid || null;   // presente solo nell'app Android
+
+function defaultSettings(){
+  return {first:'',last:'',onboarded:false,baseline:null,limit:null,packPrice:null,packSize:20,
+          products:[],mainId:null,plan:null,places:DEFAULT_PLACES.slice()};
+}
+function fixSettings(s){
+  if(!Array.isArray(s.products)) s.products=[];
+  if(!s.products.length && s.packPrice!=null){
+    s.products.push({id:newId(),k:'c',brand:'Sigarette',variant:'',nic:null,price:s.packPrice,size:s.packSize||20});
+    s.packPrice=null;
+  }
+  var sm=s.products.filter(function(p){ return p.k!=='e'; });
+  if(!sm.some(function(p){ return p.id===s.mainId; })) s.mainId = sm.length ? sm[0].id : null;
+  if(!Array.isArray(s.places) || !s.places.length) s.places=DEFAULT_PLACES.slice();
+  return s;
+}
+function D(){ return state.demo ? state.demoData : {days:state.days,notes:state.notes,settings:state.settings}; }
+
+/* ---------- salvataggio ---------- */
+function loadLocal(){
+  try{
+    var j = JSON.parse(localStorage.getItem(LS_KEY)||'null');
+    if(j){ state.days = j.days||{}; state.notes = j.notes||{}; state.settings = fixSettings(Object.assign(defaultSettings(), j.settings||{})); }
+  }catch(e){}
+}
+function saveLocal(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify({days:state.days,notes:state.notes,settings:state.settings})); }catch(e){}
+  scheduleDrive();
+  scheduleRemind();
+}
+function enqueue(key, fn){
+  chains[key] = (chains[key]||Promise.resolve()).then(fn).catch(function(err){
+    console.error(err);
+    toast('Salvataggio nel cloud non riuscito. I dati restano su questo dispositivo.');
+  });
+}
+function persistDay(date){
+  saveLocal();
+  if(!col) return;
+  enqueue('day-'+date, function(){
+    var entries = state.days[date]||[], note = state.notes[date]||null;
+    var ref = col.doc('day-'+date);
+    if(!entries.length && !note) return ref.delete();
+    var o = {date:date,entries:entries,updated:Date.now()};
+    if(note) o.note = note;
+    return ref.set(o);
+  });
+}
+function persistSettings(){
+  saveLocal();
+  if(!col) return;
+  enqueue('settings', function(){
+    return col.doc('settings').set(Object.assign({}, state.settings, {updated:Date.now()}));
+  });
+}
+function allDates(){
+  return Object.keys(state.days).concat(Object.keys(state.notes)).filter(function(d,i,a){ return a.indexOf(d)===i; }).sort();
+}
+function applySnapshot(snap){
+  if(snap.empty && snap.metadata && snap.metadata.fromCache) return;
+  state.loading = false;
+  var days = {}, notes = {}, st = null, bk = {meta:null,chunks:{}};
+  snap.docs.forEach(function(d){
+    var v = d.data(); if(!v) return;
+    if(d.id==='settings') st = v;
+    else if(d.id==='backup-meta') bk.meta = v;
+    else if(d.id.indexOf('bk-')===0) bk.chunks[d.id] = v;
+    else if(d.id.indexOf('day-')===0 && v.date){
+      if(Array.isArray(v.entries) && v.entries.length) days[v.date] = v.entries;
+      if(v.note && (v.note.i || v.note.d)) notes[v.date] = {i:v.note.i||'',d:v.note.d||''};
+    }
+  });
+  state.backup = bk;
+  if(snap.empty && !(snap.metadata && snap.metadata.fromCache)){
+    // primo uso del cloud: porta su i dati salvati in precedenza solo sul dispositivo
+    var local = allDates();
+    if(local.length || state.settings.onboarded){ local.forEach(persistDay); persistSettings(); renderAll(); return; }
+  }
+  var ae = document.activeElement, fd = (ae && ae.dataset && ae.dataset.note) ? ae.dataset.date : null;
+  if(fd){ if(state.notes[fd]) notes[fd] = state.notes[fd]; else delete notes[fd]; }
+  state.days = days; state.notes = notes;
+  if(st){
+    var s = Object.assign(defaultSettings(), st); delete s.updated;
+    if(state.settings.onboarded) s.onboarded = true;
+    state.settings = fixSettings(s);
+  }
+  saveLocal();
+  if(fd){ state.pendingRender = true; return; }
+  renderAll();
+}
+
+/* ---------- dati derivati ---------- */
+function entriesOf(date){ return (D().days[date]||[]).slice().sort(function(a,b){ return a.t.localeCompare(b.t); }); }
+function firstDate(){
+  var ks = Object.keys(D().days).filter(function(k){ return D().days[k].length; }).sort();
+  return ks[0]||null;
+}
+function rangeDates(n){
+  var today = ymd(new Date()), first = firstDate(), out = [];
+  var start = ymd(addDays(new Date(),-(n-1)));
+  if(first && first>start) start = first;
+  for(var d=parseYmd(start); ymd(d)<=today; d=addDays(d,1)) out.push(ymd(d));
+  return out;
+}
+function collect(dates,vape){
+  var out=[]; dates.forEach(function(d){ (D().days[d]||[]).forEach(function(e){
+    if(!!isVape(e)!==!!vape) return;
+    out.push({id:e.id,t:e.t,p:e.p,r:e.r,m:e.m||0,date:d});
+  }); });
+  return out;
+}
+function by5(list){ var c=[0,0,0,0,0]; list.forEach(function(e){ if(e.r>=1&&e.r<=5) c[e.r-1]++; }); return c; }
+function sum(a){ return a.reduce(function(x,y){ return x+y; },0); }
+function lastMoment(){
+  var best=null; var days=D().days;
+  Object.keys(days).forEach(function(d){ days[d].forEach(function(e){ if(isVape(e)) return; var k=d+' '+e.t; if(!best||k>best.k) best={k:k,d:d,t:e.t}; }); });
+  return best;
+}
+function lastPlace(){
+  var l=null,best=null; var days=D().days;
+  Object.keys(days).forEach(function(d){ days[d].forEach(function(e){ var k=d+' '+e.t; if(!best||k>best){ best=k; l=e.p; } }); });
+  return l;
+}
+function dur(mins){
+  if(mins<60) return mins+' min';
+  var h=Math.floor(mins/60), m=mins%60;
+  if(h<24) return m ? h+' h '+m+' min' : h+' h';
+  return Math.floor(h/24)+' g '+(h%24)+' h';
+}
+function sinceText(){
+  var l = lastMoment(); if(!l) return 'Nessuna sigaretta registrata finora';
+  var hh = l.t.split(':').map(Number), dt = parseYmd(l.d); dt.setHours(hh[0],hh[1],0,0);
+  var mins = Math.max(0, Math.round((Date.now()-dt.getTime())/60000));
+  var today = ymd(new Date()), yest = ymd(addDays(new Date(),-1));
+  var when = l.d===today ? '' : (l.d===yest ? 'ieri ' : fmtShort.format(parseYmd(l.d))+' ');
+  return 'Ultima sigaretta '+when+l.t+' · '+dur(mins)+' fa';
+}
+function avgInterval(es){
+  if(es.length<2) return null;
+  var m = es.map(function(e){ var p=e.t.split(':').map(Number); return p[0]*60+p[1]; });
+  return Math.round((m[m.length-1]-m[0])/(m.length-1));
+}
+
+function firstAny(){
+  var ks = Object.keys(D().notes||{}), f = firstDate();
+  if(f) ks.push(f);
+  ks.sort();
+  return ks[0]||null;
+}
+function products(S){ return S.products||[]; }
+function smokables(S){ return products(S).filter(function(p){ return p.k!=='e'; }); }
+function prodById(S,id){ return products(S).filter(function(p){ return p.id===id; })[0]||null; }
+function mainProd(S){ var l=smokables(S); return l.filter(function(p){ return p.id===S.mainId; })[0]||l[0]||null; }
+function prodLabel(p){
+  if(p.k==='h') return 'Heets'+(p.variant?' '+p.variant:'');
+  if(p.k==='t') return p.brand||'Tabacco';
+  if(p.k==='e') return p.brand||'Sigaretta elettronica';
+  return ((p.brand||'')+(p.variant?' '+p.variant:'')).trim()||'Sigarette';
+}
+function prodSub(p){
+  var a=[KIND_NAME[p.k]];
+  if(p.nic!=null) a.push(nf2.format(p.nic)+(p.k==='e'?' mg/ml':' mg'));
+  if(p.k!=='e' && p.price!=null && p.size) a.push(eur.format(p.price)+' per '+p.size);
+  return a.join(' · ');
+}
+function unitCost(S){
+  var p=mainProd(S);
+  if(p && p.price!=null && p.size) return p.price/p.size;
+  if(S.packPrice!=null) return S.packPrice/(S.packSize||20);
+  return null;
+}
+function mainNic(S){ var p=mainProd(S); return p && p.nic!=null ? p.nic : null; }
+function baseNic(S){ var m=mainNic(S); return (S.baseline!=null && m!=null) ? S.baseline*m : null; }
+function nicOf(e,S){ if(isVape(e)) return null; return e.n!=null ? e.n : mainNic(S); }
+function dayNic(date){
+  var S=D().settings, t=0, any=false;
+  (D().days[date]||[]).forEach(function(e){ var n=nicOf(e,S); if(n!=null){ t+=n; any=true; } });
+  return any ? t : null;
+}
+function trackedDates(){ return firstDate() ? rangeDates(3650) : [ymd(new Date())]; }
+function savedTotal(){
+  var S=D().settings, c=unitCost(S);
+  if(S.baseline==null || c==null) return null;
+  var ds=trackedDates();
+  return (S.baseline*ds.length - collect(ds).length)*c;
+}
+function lastProdId(){
+  var best=null, id=null, days=D().days;
+  Object.keys(days).forEach(function(d){ days[d].forEach(function(e){
+    if(isVape(e) || !e.pr) return;
+    var k=d+' '+e.t; if(!best||k>best){ best=k; id=e.pr; }
+  }); });
+  var S=D().settings;
+  return id && prodById(S,id) ? id : null;
+}
+
+/* ---------- dati d'esempio (non salvati) ---------- */
+function makeDemo(){
+  var seed = 20261015;
+  var rnd = function(){ seed|=0; seed=seed+0x6D2B79F5|0; var t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
+  var cand = [[7.3,'Casa',1],[8.2,'Auto',2],[9.6,'Lavoro',3],[10.8,'Bar',2],[12.4,'Lavoro',3],[13.3,'Bar',1],[14.6,'Strada',3],
+              [15.8,'Lavoro',4],[16.9,'Lavoro',4],[18.2,'Auto',3],[19.4,'Casa',4],[20.6,'Amici',3],[21.7,'Casa',5],[22.6,'Casa',5]];
+  var days = {}, now = new Date(), total = 27;
+  for(var i=0;i<=total;i++){
+    var date = ymd(addDays(now, i-total));
+    var n = Math.max(3, Math.round(14 - i*0.3 + (rnd()-0.5)*2));
+    var pick = cand.map(function(c){ return {c:c, s:c[2]*(i/total)*1.4 + rnd()*2.2}; })
+      .sort(function(a,b){ return a.s-b.s; }).slice(0,n).map(function(x){ return x.c; });
+    var es = [];
+    pick.forEach(function(c){
+      var h = c[0] + (rnd()-0.5)*0.8, mins = Math.round(h*60);
+      var t = pad(Math.floor(mins/60))+':'+pad(mins%60);
+      var r = Math.min(5, Math.max(1, Math.round(c[2] + (rnd()-0.5)*1.2)));
+      if(date===ymd(now) && t>hm(now)) return;
+      var asVape = i>8 && c[2]>=4 && rnd()<0.55;
+      if(asVape) es.push({id:'demo'+i+'-'+es.length, t:t, p:c[1], r:r, k:'v', m:6+Math.round(rnd()*12)});
+      else es.push({id:'demo'+i+'-'+es.length, t:t, p:c[1], r:r, pr:'dp1', n:0.6});
+    });
+    if(es.length) days[date]=es;
+  }
+  var notes = {};
+  notes[ymd(addDays(now,-1))] = {i:'Giornata più leggera del solito. Dopo cena ho fatto due passi invece di accendere.', d:'Il caffè del mattino è ancora il momento più difficile.'};
+  notes[ymd(addDays(now,-4))] = {i:'Mi sono accorto che molte sigarette erano solo abitudine.', d:'Una discussione al lavoro: ne avrei fumate tre di fila.'};
+  notes[ymd(addDays(now,-9))] = {i:'Respiro un po\' meglio salendo le scale.', d:'Serata con gli amici, tutti fumavano.'};
+  notes[ymd(addDays(now,-15))] = {i:'Primo giorno con il limite a 12.', d:'Dopo i pasti la voglia è fortissima.'};
+  return {days:days, notes:notes, settings:{first:'Anna',last:'Rossi',onboarded:true,baseline:15,limit:8,packPrice:null,packSize:20,
+    products:[{id:'dp1',k:'c',brand:'Marlboro',variant:'Gold KS',nic:0.6,price:6.5,size:20}],mainId:'dp1',places:DEFAULT_PLACES.slice()}};
+}
+
+/* ---------- grafici ---------- */
+function stackedChart(groups,o){
+  var W=340,H=o.h||176,L=24,R=6,T=12,B=22, iw=W-L-R, ih=H-T-B, n=groups.length, bw=iw/n, w=Math.max(2,bw*0.68);
+  var totals = groups.map(function(g){ return sum(g.c); });
+  var max = Math.max.apply(null,[4].concat(totals,[o.limit||0,o.baseline||0])); max = Math.ceil(max/2)*2;
+  var y = function(v){ return T+ih-(v/max)*ih; };
+  var s = '<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(o.aria)+'">';
+  [0,max/2,max].forEach(function(v){
+    s += '<line class="grid" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text class="ax" x="'+(L-5)+'" y="'+(y(v)+3)+'" text-anchor="end">'+v+'</text>';
+  });
+  groups.forEach(function(g,i){
+    var x = L+i*bw+(bw-w)/2, base=0;
+    g.c.forEach(function(c,k){
+      if(!c) return;
+      var top = y(base+c), h = y(base)-top;
+      s += '<rect class="seg f'+(k+1)+'" x="'+x.toFixed(2)+'" y="'+top.toFixed(2)+'" width="'+w.toFixed(2)+'" height="'+h.toFixed(2)+'"/>';
+      base += c;
+    });
+    if(o.zeroMarks && base===0) s += '<circle class="zero" cx="'+(x+w/2).toFixed(2)+'" cy="'+(y(0)-4)+'" r="'+Math.min(3,w/2+.5).toFixed(1)+'"/>';
+    if(o.labelAt(i)) s += '<text class="'+(o.boldLast&&i===n-1?'ax-b':'ax')+'" x="'+(x+w/2).toFixed(2)+'" y="'+(H-6)+'" text-anchor="middle">'+esc(g.label)+'</text>';
+  });
+  if(o.baseline) s += '<line class="base" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(o.baseline)+'" y2="'+y(o.baseline)+'"/>';
+  if(o.limit) s += '<line class="lim" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(o.limit)+'" y2="'+y(o.limit)+'"/>';
+  return s+'</svg>';
+}
+function barChart(vals,labels,o){
+  var W=340,H=140,L=28,R=6,T=10,B=22, iw=W-L-R, ih=H-T-B, n=vals.length, bw=iw/n, w=Math.max(2,bw*0.68);
+  var max = Math.max.apply(null,[1].concat(vals,[o.ref||0])); max = Math.ceil(max);
+  var y = function(v){ return T+ih-(v/max)*ih; };
+  var s = '<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(o.aria)+'">';
+  [0,max/2,max].forEach(function(v){
+    s += '<line class="grid" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text class="ax" x="'+(L-5)+'" y="'+(y(v)+3)+'" text-anchor="end">'+nf1.format(v)+'</text>';
+  });
+  vals.forEach(function(v,i){
+    var x = L+i*bw+(bw-w)/2;
+    if(v>0) s += '<rect class="nb" x="'+x.toFixed(2)+'" y="'+y(v).toFixed(2)+'" width="'+w.toFixed(2)+'" height="'+(y(0)-y(v)).toFixed(2)+'" rx="1"/>';
+    if(o.labelAt(i)) s += '<text class="ax" x="'+(x+w/2).toFixed(2)+'" y="'+(H-6)+'" text-anchor="middle">'+esc(labels[i])+'</text>';
+  });
+  if(o.ref) s += '<line class="nbl" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(o.ref)+'" y2="'+y(o.ref)+'"/>';
+  return s+'</svg>';
+}
+function ramp(){
+  var s='<div class="ramp" aria-label="Scala di importanza"><span>più importante</span>';
+  for(var i=1;i<=5;i++) s+='<b class="b'+i+'">'+i+'</b>';
+  return s+'<span>meno importante</span></div>';
+}
+function hrow(label,sub,c,max){
+  var tot = sum(c);
+  var segs = c.map(function(v,i){ return v ? '<i class="b'+(i+1)+'" style="width:'+(v/max*100).toFixed(2)+'%"></i>' : ''; }).join('');
+  return '<div class="hrow"><span class="hl">'+esc(label)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span><span class="hb">'+segs+'</span><span class="hn">'+tot+'</span></div>';
+}
+
+/* ---------- viste ---------- */
+function demoBanner(){
+  return state.demo ? '<div class="demo"><span>Anteprima con dati d\'esempio. Non vengono salvati.</span><button class="btn small" data-act="demoOff">Esci</button></div>' : '';
+}
+function demoCta(){
+  return state.demo ? '' : '<div class="demo-cta"><button class="btn block" data-act="demoOn">Vedi un\'anteprima con dati d\'esempio</button></div>';
+}
+function rowHtml(date,e){
+  var v=isVape(e);
+  var tag = v ? '<span class="tag">svapo '+(e.m||0)+' min</span>' : (e.k==='h' ? '<span class="tag">heets</span>' : (e.k==='t' ? '<span class="tag">tabacco</span>' : ''));
+  var nn = (!v && e.n!=null) ? '<small class="nn">'+nf2.format(e.n)+' mg nicotina</small>' : '';
+  var what = v ? 'svapo' : (e.k==='h' ? 'heets' : (e.k==='t' ? 'sigaretta di tabacco' : 'sigaretta'));
+  return '<button class="row" data-act="edit" data-date="'+date+'" data-id="'+esc(e.id)+'" aria-label="Modifica '+what+' delle '+e.t+', '+esc(e.p)+(v?', '+(e.m||0)+' minuti':'')+', importanza '+e.r+'">'+
+    '<span class="t">'+e.t+'</span><span class="p">'+esc(e.p)+tag+nn+'</span><span class="badge b'+e.r+'">'+e.r+'</span></button>';
+}
+
+function diaryHtml(date){
+  var nt=(D().notes||{})[date]||{i:'',d:''}, ro=state.demo?' readonly':'';
+  return '<div class="diary">'+
+    '<label class="fld"><span>Impressioni</span><textarea data-note="i" data-date="'+date+'"'+ro+' maxlength="2000" placeholder="Com\'è andata? Cosa hai notato?">'+esc(nt.i)+'</textarea></label>'+
+    '<label class="fld"><span>Difficoltà affrontate</span><textarea data-note="d" data-date="'+date+'"'+ro+' maxlength="2000" placeholder="Quando è stato più difficile? Cosa ti ha aiutato?">'+esc(nt.d)+'</textarea></label>'+
+    '<p class="help">'+(state.demo?'Nell\'anteprima il diario si può solo leggere.':'Si salva da solo mentre scrivi.')+'</p></div>';
+}
+
+/* Polmoni: più fumo nella giornata, più si riempiono. f va da 0 (puliti) a 1 (pieni). */
+function lungsSvg(f){
+  var lvl = 158 - f*104;
+  var wave = function(y,amp){
+    var p='M-100 '+y.toFixed(1);
+    for(var i=0;i<8;i++) p+=' q12.5 '+(-amp)+' 25 0 t25 0';
+    return p+' V190 H-100 Z';
+  };
+  var L='M100 58 C80 50 46 66 35 106 C27 138 38 158 64 156 C88 154 100 142 100 118 Z';
+  var R='<path d="'+L+'" transform="translate(200 0) scale(-1 1)"';
+  var ink='#33232A', mouth, eyes;
+  if(f<.25)      mouth='M89 116 Q100 128 111 116';
+  else if(f<.6)  mouth='M92 119 Q100 124 108 119';
+  else if(f<.85) mouth='M92 123 Q100 117 108 123';
+  else           mouth='M90 126 Q100 112 110 126';
+  if(f<.85) eyes='<ellipse cx="82" cy="104" rx="3.6" ry="4.6" fill="'+ink+'"/><ellipse cx="118" cy="104" rx="3.6" ry="4.6" fill="'+ink+'"/>'+
+                 '<circle cx="83.2" cy="102.4" r="1.1" fill="#fff"/><circle cx="119.2" cy="102.4" r="1.1" fill="#fff"/>';
+  else eyes='<path d="M76 106 Q82 99 88 106 M112 106 Q118 99 124 106" fill="none" stroke="'+ink+'" stroke-width="2.8" stroke-linecap="round"/>';
+  var star=function(x,y){ return '<path d="M0 -7 L2 -2 L7 0 L2 2 L0 7 L-2 2 L-7 0 L-2 -2Z" transform="translate('+x+' '+y+')" fill="var(--accent)" opacity=".8"/>'; };
+  var extra='';
+  if(f<.15) extra += star(34,34)+star(168,50)+star(150,22);
+  if(f>=.5) extra += '<circle cx="90" cy="9" r="7" fill="var(--smoke-2)" opacity=".6"/><circle cx="104" cy="5" r="5.5" fill="var(--smoke-2)" opacity=".5"/>';
+  if(f>=.85) extra += '<path d="M160 66 q8 -5 14 2 M164 78 q8 -4 12 3" fill="none" stroke="var(--smoke)" stroke-width="2.6" stroke-linecap="round"/>';
+  return '<svg viewBox="0 0 200 172" role="img" aria-label="Polmoni disegnati, pieni di fumo al '+Math.round(f*100)+'%">'+
+    '<defs><clipPath id="lgc"><path d="'+L+'"/>'+R+'/></clipPath></defs>'+
+    '<circle cx="100" cy="98" r="84" fill="var(--accent-soft)" opacity=".55"/>'+
+    '<rect x="93" y="14" width="14" height="44" rx="6" fill="var(--lung)" stroke="var(--lung-edge)" stroke-width="3"/>'+
+    '<path d="'+L+'" fill="var(--lung)"/>'+R+' fill="var(--lung)"/>'+
+    '<path d="M100 56 C100 72 88 80 72 90 M100 56 C100 72 112 80 128 90" fill="none" stroke="var(--lung-edge)" stroke-width="3" stroke-linecap="round" opacity=".7"/>'+
+    '<g clip-path="url(#lgc)"><g class="wv2"><path d="'+wave(lvl+5,5)+'" fill="var(--smoke-2)" opacity=".75"/></g>'+
+    '<g class="wv"><path d="'+wave(lvl,6)+'" fill="var(--smoke)" opacity=".85"/></g></g>'+
+    '<path d="'+L+'" fill="none" stroke="var(--lung-edge)" stroke-width="3" stroke-linejoin="round"/>'+R+' fill="none" stroke="var(--lung-edge)" stroke-width="3" stroke-linejoin="round"/>'+
+    '<circle cx="72" cy="116" r="7" fill="#FF7F96" opacity=".45"/><circle cx="128" cy="116" r="7" fill="#FF7F96" opacity=".45"/>'+
+    eyes+'<path d="'+mouth+'" fill="none" stroke="'+ink+'" stroke-width="2.8" stroke-linecap="round"/>'+extra+'</svg>';
+}
+function lungsCard(n,S){
+  var ref=S.baseline||S.limit||20, f=Math.min(1,n/ref), pct=Math.round(f*100), t;
+  if(n===0) t='Polmoni puliti, per ora';
+  else if(f<.34) t='Ancora leggeri';
+  else if(f<.67) t='Si stanno riempiendo';
+  else if(f<1) t='Tanto fumo oggi';
+  else t='Pieni di fumo';
+  var sub;
+  if(n===0) sub='Ogni sigaretta che non fumi li lascia più liberi.';
+  else if(S.baseline) sub=pct+'% del fumo di una tua giornata di prima';
+  else sub=n+' su '+ref+(S.limit?', il tuo limite':', riferimento di 20 al giorno');
+  return '<section class="lungs" aria-label="Polmoni di oggi">'+lungsSvg(f)+'<p class="lc">'+t+'</p><p class="ls">'+sub+'</p>'+
+    '<div class="lg-bar" aria-hidden="true"><i style="width:'+pct+'%"></i></div></section>';
+}
+function savingsCard(S,n){
+  var c=unitCost(S), mn=mainNic(S), h='<section class="sec"><h2>Risparmio</h2>';
+  if(c==null) return h+'<p class="meta">Aggiungi il prezzo e le sigarette della confezione in Impostazioni, dentro Prodotti, per vedere quanto risparmi.</p></section>';
+  h += '<p class="meta" style="margin:0">Ogni sigaretta in meno vale <b>'+eur.format(c)+'</b>'+(mn!=null?' e circa '+nf2.format(mn)+' mg di nicotina':'')+'.</p>';
+  if(S.baseline==null) return h+'<p class="meta">Imposta quante ne fumavi al giorno prima per calcolare il risparmio.</p></section>';
+  var today=Math.max(0,S.baseline-n)*c, tot=savedTotal(), ds=rangeDates(7), avg=ds.length?collect(ds).length/ds.length:0, mon=(S.baseline-avg)*c*30;
+  h += '<div class="stats"><div><b>'+eur.format(today)+'</b><span>oggi</span></div><div><b>'+(tot>0?eur.format(tot):'—')+'</b><span>finora</span></div>'+
+    '<div'+(proLocked()?' data-act="paywall"':'')+'><b>'+(proLocked()?'PRO':(mon>0?eur.format(mon):'—'))+'</b><span>al mese, a questo ritmo</span></div></div>';
+  return h+'</section>';
+}
+
+function viewOggi(){
+  var S=D().settings, today=ymd(new Date()), all=entriesOf(today), es=all.filter(isCig), vp=all.filter(isVape), n=es.length, lim=S.limit;
+  var h = demoBanner()+'<header class="top"><div><p class="eyebrow">'+esc(fmtLong.format(new Date()))+'</p><h1>'+(S.first?'Ciao, '+esc(S.first):'Oggi')+'</h1></div></header>';
+  h += '<section class="today"><div class="big"><span class="num">'+n+'</span><span class="cap">'+(n===1?'sigaretta':'sigarette')+(lim!=null?' · limite '+lim:'')+'</span></div>';
+  var slots = Math.max(lim||0, n), strip='';
+  for(var i=0;i<slots;i++){
+    if(i<n) strip += '<i class="stick'+(lim!=null&&i>=lim?' over':'')+'" style="--c:var(--r'+es[i].r+')" title="'+es[i].t+' · importanza '+es[i].r+'"></i>';
+    else strip += '<i class="slot"></i>';
+  }
+  h += '<div class="strip" role="img" aria-label="'+n+' sigarette oggi">'+strip+'</div>';
+  if(lim!=null){
+    if(n<lim) h += '<p class="status">'+(lim-n===1?'Ne resta 1 entro il limite':'Ne restano '+(lim-n)+' entro il limite')+'</p>';
+    else if(n===lim) h += '<p class="status">Limite raggiunto</p>';
+    else h += '<p class="status over">'+(n-lim)+(n-lim===1?' oltre il limite':' oltre il limite')+'</p>';
+  } else if(n===0) h += '<p class="status">Nessuna sigaretta registrata oggi</p>';
+  h += '<p class="meta" id="since">'+esc(sinceText())+'</p>';
+  var iv = avgInterval(es); if(iv!==null) h += '<p class="meta">Intervallo medio oggi: '+dur(iv)+'</p>';
+  if(vp.length) h += '<p class="meta">Svapo oggi: '+sum(vp.map(function(e){ return e.m||0; }))+' min in '+vp.length+(vp.length===1?' sessione':' sessioni')+'</p>';
+  var nic=dayNic(today), bn=baseNic(S);
+  if(nic!=null) h += '<p class="meta">Nicotina oggi: '+nf2.format(nic)+' mg (stima dalle etichette)'+(bn!=null?' · prima circa '+nf1.format(bn)+' mg':'')+'</p>';
+  h += '</section><button class="btn primary block cta" data-act="log">Segna una sigaretta</button><button class="btn block" style="margin-top:8px" data-act="log" data-kind="v">Ho svapato invece</button>';
+  if(S.baseline!=null) h += '<p class="meta">Prima ne fumavi circa '+S.baseline+' al giorno.</p>';
+  h += lungsCard(n,S) + savingsCard(S,n);
+  if(all.length){
+    h += '<section class="sec"><h2>Registrate oggi</h2><div class="list">'+all.map(function(e){ return rowHtml(today,e); }).join('')+'</div></section>';
+  }
+  h += '<section class="sec"><h2>Il diario di oggi</h2>'+diaryHtml(today)+'</section>';
+  if(!state.demo && S.baseline==null && S.limit==null){
+    h += '<section class="setup"><h2>Imposta il punto di partenza</h2><p>Serve per confrontare ogni giornata con le tue abitudini di prima.</p>'+
+      '<div class="two"><label class="fld"><span>Al giorno, prima</span><input type="number" id="su-base" inputmode="numeric" min="0" max="99" placeholder="es. 15"></label>'+
+      '<label class="fld"><span>Limite di oggi</span><input type="number" id="su-lim" inputmode="numeric" min="0" max="99" placeholder="es. 10"></label></div>'+
+      '<button class="btn block" style="margin-top:12px" data-act="saveSetup">Salva</button></section>';
+  }
+  if(!all.length) h += demoCta();
+  return h;
+}
+
+function viewStorico(){
+  var first=firstAny(), today=ymd(new Date()), S=D().settings, c=unitCost(S), ft=firstDate();
+  var h = demoBanner()+'<header class="top"><div><p class="eyebrow">Giorno per giorno</p><h1>Storico</h1></div><button class="btn small" data-act="addPast">+ Aggiungi</button></header>';
+  if(!first) return h+'<div class="empty"><b>Ancora nessuna registrazione</b>Ogni sigaretta che segni compare qui, con ora, luogo e importanza. Per ogni giorno puoi anche scrivere il diario.</div>'+demoCta();
+  var dates=[]; for(var d=parseYmd(today); ymd(d)>=first && dates.length<120; d=addDays(d,-1)) dates.push(ymd(d));
+  h += '<div class="list">';
+  dates.forEach(function(date){
+    var all=entriesOf(date), es=all.filter(isCig), vp=all.filter(isVape), open=state.openDay===date;
+    var hasNote=!!(D().notes||{})[date];
+    var notes=[]; if(date===today) notes.push('oggi'); if(vp.length) notes.push('svapo '+sum(vp.map(function(e){ return e.m||0; }))+' min'); if(hasNote) notes.push('diario');
+    var mini = es.slice(0,30).map(function(e){ return '<i style="--c:var(--r'+e.r+')"></i>'; }).join('');
+    h += '<div class="day"><button class="day-head" data-act="toggleDay" data-date="'+date+'" aria-expanded="'+open+'">'+
+      '<span class="dl">'+esc(fmtShort.format(parseYmd(date)))+(notes.length?'<small>'+notes.join(' · ')+'</small>':'')+'</span>'+
+      '<span class="mini">'+mini+'</span><span class="dc'+(es.length?'':' zero')+'">'+es.length+'</span></button>';
+    if(open){
+      var info=[], nic=dayNic(date);
+      if(nic!=null) info.push('Nicotina: '+nf2.format(nic)+' mg');
+      if(S.baseline!=null && c!=null && ft && date>=ft) info.push('Risparmio rispetto a prima: '+eur.format(Math.max(0,S.baseline-es.length)*c));
+      h += '<div class="day-body">'+(all.length ? all.map(function(e){ return rowHtml(date,e); }).join('') :
+        '<p class="meta" style="padding:6px 0 4px">Nessuna registrazione in questa giornata.</p>')+
+        (info.length?'<p class="meta" style="padding:6px 0">'+esc(info.join(' · '))+'</p>':'')+
+        '<button class="btn small ghost" data-act="log" data-date="'+date+'">+ Aggiungi a questo giorno</button>'+
+        '<div style="margin-top:8px">'+diaryHtml(date)+'</div></div>';
+    }
+    h += '</div>';
+  });
+  return h+'</div>';
+}
+
+function viewAnalisi(){
+  var first=firstDate(), S=D().settings;
+  var h = demoBanner()+'<header class="top"><div><p class="eyebrow">Come sta andando</p><h1>Analisi</h1></div></header>';
+  if(!first) return h+'<div class="empty"><b>Servono alcune registrazioni</b>Dopo qualche giorno qui vedrai l\'andamento, le ore e i luoghi più critici.</div>'+demoCta();
+  var n=proLocked()?7:state.range, dates=rangeDates(n), list=collect(dates), total=list.length, avg=dates.length?total/dates.length:0;
+  var zeroDays = dates.filter(function(d){ return !(D().days[d]||[]).filter(isCig).length; }).length;
+  h += '<div class="chips" role="group" aria-label="Periodo">'+[7,14,30,90].map(function(v){
+    if(proLocked() && v>7) return '<button class="chip" data-act="paywall" aria-label="'+v+' giorni, funzione Pro">'+v+' giorni<span class="pro">PRO</span></button>';
+    return '<button class="chip'+(v===n?' on':'')+'" data-act="setRange" data-n="'+v+'" aria-pressed="'+(v===n)+'">'+v+' giorni</button>';
+  }).join('')+'</div>';
+
+  // risparmio dall'inizio
+  var sv = savedTotal(), saved = sv!=null ? (sv>0 ? eur.format(sv) : '—') : null;
+  h += '<div class="stats"><div><b>'+nf1.format(avg)+'</b><span>al giorno</span></div><div><b>'+zeroDays+'</b><span>giorni senza</span></div><div><b>'+(saved||'—')+'</b><span>risparmiato</span></div></div>';
+
+  var groups = dates.map(function(d){ return {label:String(parseYmd(d).getDate()), c:by5((D().days[d]||[]).filter(isCig))}; });
+  var every = n<=14?1:(n<=30?5:15), len=groups.length;
+  h += '<section class="sec"><h2>Sigarette al giorno</h2>'+
+    stackedChart(groups,{aria:'Sigarette fumate ogni giorno negli ultimi '+n+' giorni',limit:S.limit,baseline:S.baseline,zeroMarks:true,boldLast:true,
+      labelAt:function(i){ return (len-1-i)%every===0; }})+
+    '<div class="legend">'+(S.limit?'<span><i class="sw l"></i>limite '+S.limit+'</span>':'')+(S.baseline?'<span><i class="sw b"></i>prima: '+S.baseline+'</span>':'')+'<span><i class="sw z"></i>giorno senza</span></div>'+ramp()+'</section>';
+
+  var vl=collect(dates,true);
+  if(vl.length){
+    var vm=sum(vl.map(function(e){ return e.m; }));
+    h += '<section class="sec"><h2>Svapo</h2><div class="stats"><div><b>'+vm+'</b><span>minuti</span></div><div><b>'+vl.length+'</b><span>sessioni</span></div><div><b>'+nf1.format(vm/dates.length)+'</b><span>minuti al giorno</span></div></div></section>';
+  }
+
+  // nicotina
+  var nics = dates.map(dayNic);
+  if(proLocked() && nics.some(function(x){ return x!=null; })){
+    h += lockCard('Nicotina nel tempo','Il grafico dei mg al giorno e il confronto con il punto di partenza.');
+  } else if(nics.some(function(x){ return x!=null; })){
+    var nv = nics.map(function(x){ return x||0; }), navg = sum(nv)/dates.length, bn = baseNic(S);
+    var vari = bn ? Math.round((navg/bn-1)*100) : null;
+    var every2 = n<=14?1:(n<=30?5:15), len2 = nv.length;
+    h += '<section class="sec"><h2>Nicotina</h2><div class="stats"><div><b>'+nf2.format(navg)+'</b><span>mg al giorno</span></div>'+
+      '<div><b>'+(bn!=null?nf1.format(bn):'—')+'</b><span>mg al giorno prima</span></div>'+
+      '<div><b>'+(vari!==null?(vari>0?'+':'')+vari+'%':'—')+'</b><span>rispetto a prima</span></div></div>'+
+      barChart(nv, dates.map(function(d){ return String(parseYmd(d).getDate()); }), {ref:bn, aria:'Nicotina stimata ogni giorno negli ultimi '+n+' giorni', labelAt:function(i){ return (len2-1-i)%every2===0; }})+
+      '<p class="help" style="margin-top:6px">Stima: nicotina dichiarata sull\'etichetta del prodotto per ogni sigaretta registrata. La quantità che il corpo assorbe davvero può essere più alta.</p></section>';
+  }
+
+  // insight
+  var ins=[], c5=by5(list);
+  if(total<5){
+    ins.push('Registra ancora qualche sigaretta: servono più dati per vedere un andamento.');
+  } else {
+    var low = c5[3]+c5[4];
+    if(low>0) ins.push(Math.round(low/total*100)+'% delle sigarette è di importanza 4 o 5. Sono le più facili da togliere per prime.');
+    var hours=[]; for(var i=0;i<24;i++) hours.push([0,0,0,0,0]);
+    list.forEach(function(e){ var hh=parseInt(e.t.slice(0,2),10); if(e.r>=1&&e.r<=5) hours[hh][e.r-1]++; });
+    var ph=0; hours.forEach(function(c,i){ if(sum(c)>sum(hours[ph])) ph=i; });
+    ins.push('Fascia più a rischio: '+pad(ph)+':00–'+pad((ph+1)%24)+':00, con '+sum(hours[ph])+' sigarette.');
+    var pl={}; list.forEach(function(e){ (pl[e.p]=pl[e.p]||[]).push(e.r); });
+    var tp=Object.keys(pl).sort(function(a,b){ return pl[b].length-pl[a].length; })[0];
+    var avgR=sum(pl[tp])/pl[tp].length;
+    ins.push('Luogo principale: '+tp+', '+pl[tp].length+' sigarette, importanza media '+nf1.format(avgR)+' su 5.');
+  }
+  var td=ymd(new Date()), f=firstDate();
+  if(f && f<=ymd(addDays(new Date(),-13))){
+    var a=rangeDates(7), b=[]; for(var k=13;k>=7;k--) b.push(ymd(addDays(new Date(),-k)));
+    var ca=collect(a).length/7, cb=collect(b).length/7, df=ca-cb;
+    ins.push('Ultimi 7 giorni: '+nf1.format(ca)+' al giorno, '+(Math.abs(df)<0.05?'come i':nf1.format(Math.abs(df))+(df<0?' in meno rispetto ai':' in più rispetto ai'))+' 7 precedenti.');
+  }
+  h += proLocked() ? lockCard('Cosa emerge','Le sigarette più facili da togliere, la fascia più a rischio e il confronto con la settimana prima.')
+    : '<section class="sec"><h2>Cosa emerge</h2><ul class="insights">'+ins.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('')+'</ul></section>';
+
+  // ore
+  var hg=[]; for(var q=0;q<24;q++) hg.push({label:String(q),c:[0,0,0,0,0]});
+  list.forEach(function(e){ var hh=parseInt(e.t.slice(0,2),10); if(e.r>=1&&e.r<=5) hg[hh].c[e.r-1]++; });
+  h += proLocked() ? lockCard('A che ora','Le fasce della giornata in cui fumi di più.')
+    : '<section class="sec"><h2>A che ora</h2>'+stackedChart(hg,{aria:'Sigarette per ora del giorno',h:150,labelAt:function(i){ return i%3===0; }})+'</section>';
+
+  // luoghi
+  var pm={}; list.forEach(function(e){ var c=pm[e.p]||(pm[e.p]={c:[0,0,0,0,0],n:0,s:0}); if(e.r>=1&&e.r<=5) c.c[e.r-1]++; c.n++; c.s+=e.r; });
+  var pk=Object.keys(pm).sort(function(a,b){ return pm[b].n-pm[a].n; });
+  if(proLocked()) h += lockCard('Dove','I luoghi più critici, con la media di importanza.');
+  else if(pk.length){
+    var pmax=pm[pk[0]].n;
+    h += '<section class="sec"><h2>Dove</h2><div class="list">'+pk.map(function(k){ return hrow(k,'importanza media '+nf1.format(pm[k].s/pm[k].n),pm[k].c,pmax); }).join('')+'</div></section>';
+  }
+
+  // importanza
+  var imax=Math.max.apply(null,c5.concat([1]));
+  h += '<section class="sec"><h2>Quanto contavano</h2><div class="list">'+[0,1,2,3,4].map(function(i){
+    var cc=[0,0,0,0,0]; cc[i]=c5[i];
+    return hrow((i+1)+' · '+LABELS[i], total?Math.round(c5[i]/total*100)+'%':'', cc, imax);
+  }).join('')+'</div></section>';
+  return h;
+}
+
+function prodList(S){
+  var l=products(S);
+  if(!l.length) return '<p class="help" style="margin:6px 0 12px">Nessun prodotto ancora.</p>';
+  var multi=smokables(S).length>1, main=mainProd(S);
+  return '<div class="prods">'+l.map(function(p){
+    var isMain=main && main.id===p.id;
+    return '<div class="prod"><div><b>'+esc(prodLabel(p))+(isMain&&multi?'<span class="tag main">principale</span>':'')+'</b><small>'+esc(prodSub(p))+'</small></div><div class="pa">'+
+      (multi && p.k!=='e' && !isMain ? '<button class="btn small ghost" data-act="mainProd" data-id="'+esc(p.id)+'">Principale</button>' : '')+
+      '<button class="btn small" data-act="editProd" data-id="'+esc(p.id)+'">Modifica</button></div></div>';
+  }).join('')+'</div>';
+}
+
+function backupHtml(){
+  var h='<section class="sec"><h2>Backup</h2>';
+  if(state.mode==='cloud'){
+    var m=state.backup && state.backup.meta;
+    h += '<p class="help" style="margin:4px 0 8px">Il backup è una copia di sicurezza nel tuo account, separata dai dati di ogni giorno. Se cancelli qualcosa per sbaglio puoi ripristinarla.</p>';
+    h += m ? '<p class="store" style="margin:0 0 10px"><i class="dot"></i><span>Ultimo backup: '+esc(fmtDT.format(new Date(m.at)))+' · '+m.days+' giorni</span></p>'
+           : '<p class="store" style="margin:0 0 10px"><i class="dot off"></i><span>Nessun backup ancora.</span></p>';
+    h += '<div class="btns"><button class="btn primary" data-act="backupNow">Salva il backup ora</button>'+
+         (m?'<button class="btn" data-act="restoreCloud">Ripristina dal backup</button>':'')+'</div>';
+  } else {
+    h += '<p class="help" style="margin:4px 0 8px">Questa copia dell\'app non è collegata a un account. Salva un file di backup e conservalo dove vuoi, per esempio nel tuo cloud personale.</p>';
+  }
+  h += '<div class="btns">'+(dl?'<button class="btn" data-act="exportJson">Scarica il file di backup</button>':'')+
+       '<label class="btn" style="cursor:pointer">Ripristina da un file<input type="file" id="rf" accept=".json,application/json" hidden></label></div>';
+  var r=state.restore;
+  if(r){
+    h += '<div class="note"><b>Ripristinare?</b> Dal '+esc(r.label)+': '+r.count+' registrazioni in '+r.dayN+' giorni. I dati attuali verranno sostituiti.'+
+         '<div class="btns"><button class="btn danger armed" data-act="doRestore">Sostituisci i miei dati</button><button class="btn ghost" data-act="cancelRestore">Annulla</button></div></div>';
+  }
+  return h+'</section>';
+}
+
+function viewImpost(){
+  var S=D().settings;
+  var h = demoBanner()+'<header class="top"><div><p class="eyebrow">Diario di un fumatore</p><h1>Impostazioni</h1></div></header>';
+  var v=function(x){ return x==null?'':String(x).replace('.',','); };
+  h += '<div class="form">'+
+    '<div class="two"><label class="fld"><span>Nome</span><input type="text" data-set="first" maxlength="40" value="'+esc(S.first||'')+'"></label>'+
+    '<label class="fld"><span>Cognome</span><input type="text" data-set="last" maxlength="40" value="'+esc(S.last||'')+'"></label></div>'+
+    '<label class="fld"><span>Sigarette al giorno prima di iniziare</span><input type="number" inputmode="numeric" min="0" max="99" data-set="baseline" value="'+v(S.baseline)+'"></label>'+
+    '<label class="fld"><span>Limite giornaliero di adesso</span><input type="number" inputmode="numeric" min="0" max="99" data-set="limit" value="'+v(S.limit)+'"></label>'+
+    '<p class="help">Abbassa il limite man mano che riduci. Il grafico mostra sia il limite sia il punto di partenza.</p></div>';
+  h += '<section class="sec"><h2>Prodotti</h2><p class="help" style="margin:4px 0 0">Risparmio e nicotina usano il prodotto principale.</p>'+prodList(S)+
+    '<button class="btn block" data-act="addProd">+ Aggiungi prodotto</button></section>';
+  h += planHtml(S) + remindHtml() + lookHtml();
+  h += '<section class="sec"><h2>Luoghi</h2><p class="help" style="margin:4px 0 10px">Compaiono come scelte rapide quando segni una sigaretta.</p><div class="pchips">'+
+    S.places.map(function(p,i){ return '<span class="pchip">'+esc(p)+'<button data-act="delPlace" data-i="'+i+'" aria-label="Rimuovi '+esc(p)+'">×</button></span>'; }).join('')+'</div>'+
+    '<div class="addp"><input type="text" id="np" maxlength="24" placeholder="Nuovo luogo" aria-label="Nuovo luogo"><button class="btn" data-act="addPlace">Aggiungi</button></div></section>';
+  h += '<section class="sec"><h2>I tuoi dati</h2><p class="store" style="margin:6px 0 12px"><i class="dot'+(state.mode==='cloud'?'':' off')+'"></i><span>'+
+    (state.mode==='cloud'?'Salvati nel tuo spazio privato. Solo tu puoi vederli.':'Salvati solo su questo dispositivo.')+'</span></p>'+
+    (dl?'<button class="btn block" data-act="exportCsv">Esporta in CSV</button>':'')+'</section>';
+  if(!state.demo) h += driveHtml() + backupHtml();
+  h += '<section class="sec"><h2>Informazioni sui valori</h2><p class="help" style="margin:4px 0 0">La nicotina delle sigarette arriva dalla tabella dei livelli di emissione dell\'Agenzia delle Dogane e dei Monopoli, aggiornata al 2 dicembre 2019. Sono valori misurati con il metodo ISO delle etichette: dicono cosa esce da una sigaretta in una macchina, non quanta nicotina assorbe davvero il tuo corpo, che può essere maggiore. Per Heets, tabacco e sigaretta elettronica i valori li scegli tu. L\'app non dà consigli medici.</p></section>';
+  return h;
+}
+
+/* ---------- schermata iniziale ---------- */
+function viewLoading(){
+  return '<div class="empty" style="padding-top:40px"><b>Un attimo…</b>Carico i tuoi dati.</div>';
+}
+function onbReady(){
+  var o=state.onb;
+  return !!(o && o.first.trim() && o.last.trim() && state.settings.products.length);
+}
+function updateOnb(){
+  var b=$('#o-go'); if(b) b.disabled=!onbReady();
+  var h=$('#o-help'); if(h) h.textContent = onbReady() ? '' : 'Servono nome, cognome e almeno un prodotto.';
+}
+function viewOnb(){
+  var S=state.settings;
+  if(!state.onb) state.onb={first:S.first||'',last:S.last||'',baseline:S.baseline==null?'':String(S.baseline),limit:S.limit==null?'':String(S.limit)};
+  var o=state.onb;
+  var h='<div class="onb"><header class="top" style="display:block"><p class="eyebrow">Benvenuto</p><h1>Diario di un fumatore</h1></header>'+
+    '<p class="lead">Poche informazioni per cominciare. Restano '+(state.mode==='cloud'?'nel tuo spazio privato':'su questo dispositivo')+' e potrai cambiarle quando vuoi.</p>'+restoreNote(true);
+  h+='<section class="card"><h2>Chi sei</h2><div class="two" style="margin-top:10px">'+
+    '<label class="fld"><span>Nome</span><input type="text" id="o-first" maxlength="40" autocomplete="given-name" value="'+esc(o.first)+'"></label>'+
+    '<label class="fld"><span>Cognome</span><input type="text" id="o-last" maxlength="40" autocomplete="family-name" value="'+esc(o.last)+'"></label></div></section>';
+  h+='<section class="card"><h2>Cosa fumi</h2><p class="help">Aggiungi ogni prodotto che usi: sigarette, Heets, tabacco o sigaretta elettronica. Per le sigarette la nicotina si compila da sola.</p>'+
+    prodList(S)+'<button class="btn block" data-act="addProd">+ Aggiungi prodotto</button></section>';
+  h+='<section class="card"><h2>Le tue abitudini</h2><p class="help">Facoltativo, ma serve per calcolare risparmio e polmoni.</p>'+
+    '<div class="two"><label class="fld"><span>Al giorno, prima</span><input type="number" id="o-base" inputmode="numeric" min="0" max="99" placeholder="es. 15" value="'+esc(o.baseline)+'"></label>'+
+    '<label class="fld"><span>Limite di oggi</span><input type="number" id="o-lim" inputmode="numeric" min="0" max="99" placeholder="es. 10" value="'+esc(o.limit)+'"></label></div></section>';
+  h+='<button class="btn primary block cta" id="o-go" data-act="finishOnb" disabled>Inizia</button><p class="help" id="o-help" style="text-align:center"></p>'+
+    '<div class="btns" style="margin-top:12px"><label class="btn ghost" style="cursor:pointer">Ho già un backup: ripristina da un file<input type="file" id="rf" accept=".json,application/json" hidden></label>'+
+    (driveAvail() && !proLocked() ? '<button class="btn ghost" data-act="driveRestoreStart">Ripristina da Google Drive</button>' : '')+'</div>'+
+    '<div class="demo-cta"><button class="btn block ghost" data-act="demoOn">Vedi prima un\'anteprima con dati d\'esempio</button></div></div>';
+  return h;
+}
+
+function renderView(){
+  var S=state.settings, onb=!state.demo && !S.onboarded;
+  var nav=$('nav'); if(nav) nav.style.display = onb ? 'none' : '';
+  var v;
+  if(onb) v = state.loading ? viewLoading() : viewOnb();
+  else v = state.tab==='storico'?viewStorico():state.tab==='analisi'?viewAnalisi():state.tab==='impostazioni'?viewImpost():viewOggi();
+  $('#app').innerHTML = v;
+  if(onb && !state.loading) updateOnb();
+}
+function renderAll(){
+  renderView();
+  document.querySelectorAll('nav button').forEach(function(b){
+    if(b.dataset.tab===state.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
+  });
+}
+
+/* ---------- toast ---------- */
+var toastTimer=null;
+function toast(msg){
+  var t=$('#toast'); t.textContent=msg; t.hidden=false;
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.hidden=true; },3000);
+}
+
+/* ---------- scheda di inserimento ---------- */
+function openSheet(o){
+  var S=D().settings, now=new Date(), places=S.places;
+  var s={mode:o.mode,date:o.date||ymd(now),t:hm(now),p:null,pi:null,other:false,custom:'',r:null,id:null,date0:null,armed:false,kind:(o.kind==='v'?'v':'c'),m:'',pr:null};
+  if(o.mode==='edit'){
+    var e=(state.days[o.date]||[]).filter(function(x){ return x.id===o.id; })[0];
+    if(!e) return;
+    s.id=e.id; s.date0=o.date; s.t=e.t; s.r=e.r; s.kind=isVape(e)?'v':'c'; s.m=e.m?String(e.m):''; s.pr=e.pr||null;
+    var idx=places.indexOf(e.p);
+    if(idx>=0) s.pi=idx; else { s.other=true; s.custom=e.p; }
+  } else {
+    var lp=lastPlace(), li=lp?places.indexOf(lp):-1;
+    if(li>=0) s.pi=li;
+    var mp=mainProd(S); s.pr=lastProdId()||(mp?mp.id:null);
+  }
+  sheet=s; renderSheet();
+  document.documentElement.classList.add('lock');
+  var p=$('#sheet .panel'); if(p) p.focus();
+}
+function closeSheet(){
+  sheet=null; psheet=null; state.pw=false; $('#sheet').hidden=true; $('#sheet').innerHTML='';
+  document.documentElement.classList.remove('lock');
+}
+function renderSheet(){
+  var s=sheet, places=D().settings.places, el=$('#sheet'), today=ymd(new Date());
+  el.hidden=false;
+  var sm = smokables(D().settings), prodFs = '';
+  if(s.kind!=='v' && sm.length>1){
+    prodFs = '<fieldset><legend>Cosa hai fumato?</legend><div class="chips">'+sm.map(function(p){
+      return '<button type="button" class="chip'+(s.pr===p.id?' on':'')+'" data-act="pickProd" data-id="'+esc(p.id)+'" aria-pressed="'+(s.pr===p.id)+'">'+esc(prodLabel(p))+'</button>';
+    }).join('')+'</div></fieldset>';
+  }
+  var chips = places.map(function(p,i){
+    return '<button type="button" class="chip'+(s.pi===i&&!s.other?' on':'')+'" data-act="pickPlace" data-i="'+i+'" aria-pressed="'+(s.pi===i&&!s.other)+'">'+esc(p)+'</button>';
+  }).join('')+'<button type="button" class="chip'+(s.other?' on':'')+'" data-act="pickOther" aria-pressed="'+s.other+'">Altro…</button>';
+  var scale=''; for(var i=1;i<=5;i++) scale+='<button type="button" class="sc b'+i+'" role="radio" aria-checked="'+(s.r===i)+'" aria-label="'+i+' '+LABELS[i-1]+'" data-act="pickR" data-r="'+i+'">'+i+'</button>';
+  el.innerHTML='<div class="scrim" data-act="closeSheet"></div>'+
+    '<div class="panel" role="dialog" aria-modal="true" aria-labelledby="sh-t" tabindex="-1">'+
+    '<div class="grab"></div><h2 id="sh-t">'+(s.mode==='edit'?'Modifica ':(s.kind==='v'?'Nuovo ':'Nuova '))+(s.kind==='v'?'svapo':'sigaretta')+'</h2>'+
+    '<div class="kind" role="radiogroup" aria-label="Tipo"><button type="button" role="radio" aria-checked="'+(s.kind==='c')+'" data-act="pickKind" data-k="c">Sigaretta</button><button type="button" role="radio" aria-checked="'+(s.kind==='v')+'" data-act="pickKind" data-k="v">Svapo</button></div>'+
+    '<div class="two"><label class="fld"><span>Data</span><input type="date" id="f-date" value="'+s.date+'" max="'+today+'"></label>'+
+    '<label class="fld"><span>Ora</span><input type="time" id="f-time" value="'+s.t+'"></label></div>'+
+    (s.kind==='v'?'<fieldset><legend>Quanti minuti? Scrivi il numero o scegli una scorciatoia</legend><input type="number" id="f-min" inputmode="numeric" min="1" max="600" placeholder="Scrivi i minuti, es. 12" value="'+esc(s.m)+'" aria-label="Minuti di svapo"><div class="qm">'+[5,10,15,20].map(function(v){ return '<button type="button" class="chip'+(String(s.m)===String(v)?' on':'')+'" data-act="pickMin" data-v="'+v+'">'+v+' min</button>'; }).join('')+'</div></fieldset>':'')+
+    prodFs+'<fieldset><legend>Dove</legend><div class="chips">'+chips+'</div>'+
+    (s.other?'<input type="text" id="f-other" maxlength="24" placeholder="Dove eri?" value="'+esc(s.custom)+'" aria-label="Altro luogo">':'')+'</fieldset>'+
+    '<fieldset><legend>Quanto era importante?</legend><div class="scale" role="radiogroup" aria-label="Importanza da 1 a 5">'+scale+'</div>'+
+    '<div class="ends"><span>1 più importante</span><span>5 meno importante</span></div>'+
+    '<p class="hint" id="f-hint">'+(s.r?esc(HINTS[s.r-1]):'Scegli un valore da 1 a 5.')+'</p></fieldset>'+
+    '<div class="actions"><button class="btn primary" id="f-save" data-act="saveSheet" disabled>'+(s.mode==='edit'?'Salva modifiche':'Registra')+'</button>'+
+    (s.mode==='edit'?'<button class="btn danger'+(s.armed?' armed':'')+'" data-act="delEntry">'+(s.armed?'Tocca ancora per eliminare':'Elimina')+'</button>':'')+
+    '<button class="btn ghost" data-act="closeSheet">Annulla</button></div></div>';
+  updateSave();
+  if(s.other){ var o=$('#f-other'); if(o && !s.custom) o.focus(); }
+}
+function sheetValid(){
+  var s=sheet; if(!s) return false;
+  var okPlace = s.other ? s.custom.trim().length>0 : s.pi!=null;
+  var okMin = s.kind!=='v' || (/^\d+$/.test(String(s.m).trim()) && +s.m>=1 && +s.m<=600);
+  return /^\d{4}-\d{2}-\d{2}$/.test(s.date) && s.date<=ymd(new Date()) && /^\d{2}:\d{2}$/.test(s.t) && okPlace && okMin && !!s.r;
+}
+function updateSave(){ var b=$('#f-save'); if(b) b.disabled=!sheetValid(); }
+
+function removeEntry(date,id){
+  var arr=state.days[date]||[]; state.days[date]=arr.filter(function(e){ return e.id!==id; });
+  if(!state.days[date].length) delete state.days[date];
+}
+function saveSheet(){
+  var s=sheet; if(!sheetValid()) return;
+  var places=state.settings.places;
+  var place = s.other ? s.custom.trim() : places[s.pi];
+  var entry={id:s.id||newId(),t:s.t,p:place,r:s.r};
+  if(s.kind==='v'){ entry.k='v'; entry.m=Math.round(+s.m); }
+  else {
+    var pr = prodById(state.settings,s.pr), old = null;
+    if(!pr || pr.k==='e') pr = mainProd(state.settings);
+    if(s.mode==='edit') old = (state.days[s.date0]||[]).filter(function(x){ return x.id===s.id; })[0]||null;
+    if(pr){
+      entry.pr = pr.id;
+      if(pr.k==='h' || pr.k==='t') entry.k = pr.k;
+      if(pr.nic!=null) entry.n = pr.nic;
+      if(old && old.pr===pr.id && old.n!=null) entry.n = old.n;
+    }
+  }
+  if(s.mode==='edit') removeEntry(s.date0,s.id);
+  (state.days[s.date]=state.days[s.date]||[]).push(entry);
+  state.days[s.date].sort(function(a,b){ return a.t.localeCompare(b.t); });
+  persistDay(s.date);
+  if(s.mode==='edit' && s.date0!==s.date) persistDay(s.date0);
+  var known = places.some(function(p){ return p.toLowerCase()===place.toLowerCase(); });
+  if(!known){ places.push(place); persistSettings(); }
+  closeSheet(); renderAll(); toast(s.mode==='edit'?'Modifiche salvate':(s.kind==='v'?'Svapo registrato':'Sigaretta registrata'));
+}
+
+/* ---------- scheda prodotto ---------- */
+function pnum(x){ var t=String(x).trim().replace(',','.'); if(t==='') return null; var n=Number(t); return isFinite(n) ? n : NaN; }
+function openProd(id){
+  var S=state.settings, p=id ? prodById(S,id) : null;
+  var o={id:p?p.id:null,k:p?p.k:'c',brand:'',variant:'',other:false,bt:'',vt:'',nic:'',price:'',size:'20',armed:false};
+  if(p){
+    o.size=p.size!=null?String(p.size):''; o.price=p.price!=null?String(p.price).replace('.',','):''; o.nic=p.nic!=null?String(p.nic).replace('.',','):'';
+    if(p.k==='c'){
+      var vs=CIG_DB[p.brand];
+      if(vs && vs.some(function(v){ return v[0]===p.variant; })){ o.brand=p.brand; o.variant=p.variant; }
+      else { o.other=true; o.bt=p.brand||''; o.vt=p.variant||''; }
+    } else if(p.k==='h') o.vt=p.variant||'';
+    else o.bt=p.brand||'';
+  }
+  psheet=o; renderProd();
+  document.documentElement.classList.add('lock');
+  var pn=$('#sheet .panel'); if(pn) pn.focus();
+}
+function prodValid(){
+  var s=psheet; if(!s) return false;
+  var nic=pnum(s.nic), price=pnum(s.price), size=pnum(s.size);
+  if(nic!==null && (isNaN(nic) || nic<0 || nic>(s.k==='e'?60:10))) return false;
+  if(s.k!=='e'){
+    if(price!==null && (isNaN(price) || price<0 || price>1000)) return false;
+    if(size===null || isNaN(size) || size<1 || size>500 || Math.floor(size)!==size) return false;
+  }
+  if(s.k==='c') return s.other ? s.bt.trim().length>0 : !!(s.brand && s.variant);
+  if(s.k==='t') return s.bt.trim().length>0;
+  return true;
+}
+function updateProdSave(){ var b=$('#p-save'); if(b) b.disabled=!prodValid(); }
+function renderProd(){
+  var s=psheet, el=$('#sheet'); el.hidden=false;
+  var unit = s.k==='e' ? 'mg/ml' : (s.k==='h' ? 'mg per stick' : 'mg per sigaretta'), body='', help='';
+  if(s.k==='c'){
+    body += '<label class="fld"><span>Marca</span><select data-psel="brand" aria-label="Marca"><option value="">Scegli la marca…</option>'+
+      BRANDS.map(function(b){ return '<option value="'+esc(b)+'"'+(!s.other&&s.brand===b?' selected':'')+'>'+esc(b)+'</option>'; }).join('')+
+      '<option value="__other"'+(s.other?' selected':'')+'>Altra marca…</option></select></label>';
+    if(s.other){
+      body += '<div class="two"><label class="fld"><span>Marca</span><input type="text" id="p-bt" maxlength="40" value="'+esc(s.bt)+'"></label>'+
+        '<label class="fld"><span>Tipo</span><input type="text" id="p-vt" maxlength="40" placeholder="es. Blu" value="'+esc(s.vt)+'"></label></div>';
+      help = 'Se non conosci la nicotina, lascia il campo vuoto.';
+    } else if(s.brand){
+      body += '<label class="fld"><span>Tipo</span><select data-psel="variant" aria-label="Tipo"><option value="">Scegli il tipo…</option>'+
+        (CIG_DB[s.brand]||[]).map(function(v){ return '<option value="'+esc(v[0])+'"'+(s.variant===v[0]?' selected':'')+'>'+esc(v[0])+'</option>'; }).join('')+'</select></label>';
+      help = s.variant ? 'Valore da etichetta (misura ISO, tabella ADM 2019). Puoi modificarlo.' : '';
+    }
+  } else if(s.k==='h'){
+    body += '<label class="fld"><span>Gusto</span><input type="text" id="p-vt" list="hf" maxlength="40" placeholder="es. Amber" value="'+esc(s.vt)+'"><datalist id="hf">'+
+      HEETS_FLAVORS.map(function(f){ return '<option value="'+esc(f)+'">'; }).join('')+'</datalist></label>';
+    help = 'Il produttore indica 0,5 mg per stick, ma misure indipendenti parlano di circa 1,2 mg inalati. Scrivi il valore che preferisci.';
+  } else if(s.k==='t'){
+    body += '<label class="fld"><span>Marca e tipo</span><input type="text" id="p-bt" maxlength="40" placeholder="es. Golden Virginia" value="'+esc(s.bt)+'"></label>';
+    help = 'Dipende da come rolli la sigaretta. Se non la conosci, lascia vuoto.';
+  } else {
+    body += '<label class="fld"><span>Nome</span><input type="text" id="p-bt" maxlength="40" placeholder="es. Liquido alla menta" value="'+esc(s.bt)+'"></label>';
+    help = 'In Unione Europea i liquidi arrivano al massimo a 20 mg/ml.';
+  }
+  body += '<label class="fld"><span>Nicotina ('+unit+')</span><input type="text" id="p-nic" inputmode="decimal" placeholder="es. 0,6" value="'+esc(s.nic)+'"></label>';
+  if(help) body += '<p class="help">'+esc(help)+'</p>';
+  if(s.k!=='e'){
+    body += '<div class="two"><label class="fld"><span>Prezzo confezione (€)</span><input type="text" id="p-price" inputmode="decimal" placeholder="es. 6,50" value="'+esc(s.price)+'"></label>'+
+      '<label class="fld"><span>'+(s.k==='h'?'Stick nella confezione':'Sigarette nella confezione')+'</span><input type="number" id="p-size" inputmode="numeric" min="1" max="500" value="'+esc(s.size)+'"></label></div>';
+  }
+  var kinds=['c','h','t','e'].map(function(k){
+    return '<button type="button" role="radio" aria-checked="'+(s.k===k)+'" data-act="pickPKind" data-k="'+k+'">'+KIND_NAME[k]+'</button>';
+  }).join('');
+  el.innerHTML='<div class="scrim" data-act="closeSheet"></div>'+
+    '<div class="panel" role="dialog" aria-modal="true" aria-labelledby="sh-t" tabindex="-1"><div class="grab"></div>'+
+    '<h2 id="sh-t">'+(s.id?'Modifica prodotto':'Nuovo prodotto')+'</h2>'+
+    (s.id?'':'<div class="kinds" role="radiogroup" aria-label="Tipo di prodotto">'+kinds+'</div>')+
+    '<div class="pf">'+body+'</div>'+
+    '<div class="actions"><button class="btn primary" id="p-save" data-act="saveProd" disabled>'+(s.id?'Salva modifiche':'Aggiungi')+'</button>'+
+    (s.id?'<button class="btn danger'+(s.armed?' armed':'')+'" data-act="delProd">'+(s.armed?'Tocca ancora per eliminare':'Elimina')+'</button>':'')+
+    '<button class="btn ghost" data-act="closeSheet">Annulla</button></div></div>';
+  updateProdSave();
+}
+function saveProd(){
+  var s=psheet; if(!prodValid()) return;
+  var S=state.settings, nic=pnum(s.nic), price=s.k==='e'?null:pnum(s.price), size=s.k==='e'?null:Math.round(pnum(s.size));
+  var p={id:s.id||newId(),k:s.k,brand:'',variant:'',nic:nic,price:price,size:size};
+  if(s.k==='c'){ p.brand=s.other?s.bt.trim():s.brand; p.variant=s.other?s.vt.trim():s.variant; }
+  else if(s.k==='h'){ p.brand='Heets'; p.variant=s.vt.trim(); }
+  else p.brand=s.bt.trim();
+  if(s.id) S.products=S.products.map(function(x){ return x.id===s.id ? p : x; });
+  else S.products.push(p);
+  fixSettings(S);
+  persistSettings(); closeSheet(); renderAll(); toast(s.id?'Prodotto aggiornato':'Prodotto aggiunto');
+}
+
+/* ---------- backup e ripristino ---------- */
+function numOrNull(x){ return (typeof x==='number' && isFinite(x)) ? x : null; }
+function cleanProducts(arr){
+  if(!Array.isArray(arr)) return [];
+  return arr.filter(function(p){ return p && typeof p==='object' && ['c','h','t','e'].indexOf(p.k)>=0; }).map(function(p){
+    return {id:String(p.id||newId()).slice(0,40),k:p.k,brand:String(p.brand||'').slice(0,40),variant:String(p.variant||'').slice(0,40),
+            nic:numOrNull(p.nic),price:numOrNull(p.price),size:numOrNull(p.size)};
+  });
+}
+function cleanData(raw){
+  if(!raw || typeof raw!=='object' || !raw.days || typeof raw.days!=='object') return null;
+  var days={}, notes={}, count=0;
+  Object.keys(raw.days).forEach(function(d){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d) || !Array.isArray(raw.days[d])) return;
+    var es=raw.days[d].filter(function(e){
+      return e && typeof e.t==='string' && /^\d{2}:\d{2}$/.test(e.t) && typeof e.p==='string' && e.r>=1 && e.r<=5;
+    }).map(function(e){
+      var o={id:String(e.id||newId()).slice(0,40),t:e.t,p:e.p.slice(0,40),r:Math.round(e.r)};
+      if(e.k==='v'||e.k==='h'||e.k==='t') o.k=e.k;
+      if(e.k==='v') o.m=Math.max(0,Math.round(+e.m)||0);
+      if(typeof e.n==='number' && isFinite(e.n)) o.n=e.n;
+      if(typeof e.pr==='string') o.pr=e.pr.slice(0,40);
+      return o;
+    });
+    if(es.length){ days[d]=es; count+=es.length; }
+  });
+  var src=(raw.notes && typeof raw.notes==='object') ? raw.notes : {};
+  Object.keys(src).forEach(function(d){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d) || !src[d] || typeof src[d]!=='object') return;
+    var i=String(src[d].i||'').slice(0,2000), dd=String(src[d].d||'').slice(0,2000);
+    if(i.trim()||dd.trim()) notes[d]={i:i,d:dd};
+  });
+  var r=(raw.settings && typeof raw.settings==='object') ? raw.settings : {};
+  var st=fixSettings({first:String(r.first||'').slice(0,40),last:String(r.last||'').slice(0,40),onboarded:!!r.onboarded,
+    baseline:numOrNull(r.baseline),limit:numOrNull(r.limit),packPrice:null,packSize:20,products:cleanProducts(r.products),
+    mainId:typeof r.mainId==='string'?r.mainId:null,
+    plan:(r.plan && typeof r.plan==='object') ? {on:!!r.plan.on,start:String(r.plan.start||'').slice(0,10),from:numOrNull(r.plan.from),
+      step:numOrNull(r.plan.step)||1,every:numOrNull(r.plan.every)||7,target:numOrNull(r.plan.target)||0} : null,
+    places:Array.isArray(r.places)?r.places.filter(function(x){ return typeof x==='string' && x.trim(); }).map(function(x){ return x.slice(0,24); }):[]});
+  return {days:days,notes:notes,settings:st,count:count};
+}
+function applyRestore(data){
+  var cur=state.settings, oldDates=allDates();
+  var st=data.settings;
+  if(cur.onboarded) st.onboarded=true;
+  if(!st.first) st.first=cur.first;
+  if(!st.last) st.last=cur.last;
+  state.days=data.days; state.notes=data.notes; state.settings=st;
+  var all=oldDates.concat(allDates()).filter(function(d,i,a){ return a.indexOf(d)===i; });
+  all.forEach(persistDay); persistSettings();
+  renderAll(); toast('Dati ripristinati');
+}
+
+/* ---------- versione gratuita, sblocco, piano di riduzione, Google Drive ---------- */
+/* Nell'app Android l'interfaccia nativa (window.MenoAndroid) dice se questa è la versione gratuita
+   e se l'acquisto è stato fatto. Fuori da Android (web, anteprima) tutto è sbloccato. */
+function nCall(f,args){
+  try{ if(native && typeof native[f]==='function') return native[f].apply(native,args||[]); }catch(e){ console.error(e); }
+  return undefined;
+}
+function proLocked(){ return nCall('isFree')===true && !state.pro; }
+function driveAvail(){ return nCall('driveAvailable')===true; }
+function lockCard(title,desc){
+  return '<section class="sec"><button class="lockcard" data-act="paywall"><b>'+esc(title)+'<span class="pro">PRO</span></b><span>'+esc(desc)+'</span></button></section>';
+}
+function openPaywall(){
+  state.pw=true; renderPaywall();
+  document.documentElement.classList.add('lock');
+  var p=$('#sheet .panel'); if(p) p.focus();
+}
+function renderPaywall(){
+  var el=$('#sheet'); el.hidden=false;
+  var perks=['Analisi su 14, 30 e 90 giorni, per ora del giorno e per luogo','Cosa emerge e grafico della nicotina nel tempo','Più di due prodotti',
+    'Risparmio previsto al mese','Piano di riduzione guidato: il limite scende da solo','Promemoria: diario serale e avviso prima della fascia a rischio',
+    'Cinque palette di colori in più','Backup automatico sul tuo Google Drive'];
+  el.innerHTML='<div class="scrim" data-act="closeSheet"></div>'+
+    '<div class="panel" role="dialog" aria-modal="true" aria-labelledby="sh-t" tabindex="-1"><div class="grab"></div>'+
+    '<h2 id="sh-t">Sblocca tutto</h2>'+
+    '<p class="meta">Un solo pagamento, per sempre. Nessun abbonamento. Registrazioni, diario, polmoni, risparmio e backup su file restano gratuiti.</p>'+
+    '<ul class="perks">'+perks.map(function(t){ return '<li>'+esc(t)+'</li>'; }).join('')+'</ul>'+
+    '<div class="actions"><button class="btn primary" data-act="buyPro">'+(state.price?'Sblocca per '+esc(state.price):'Sblocca')+'</button>'+
+    '<button class="btn" data-act="restorePro">Ho già acquistato: ripristina</button>'+
+    '<button class="btn ghost" data-act="closeSheet">Non ora</button></div></div>';
+}
+window.__setPro=function(v){
+  state.pro=!!v; applyLook(); syncReminders();
+  if(state.pw && state.pro){ closeSheet(); toast('Sbloccato. Grazie!'); }
+  renderAll();
+};
+window.__setPrice=function(p){ state.price=String(p||''); if(state.pw) renderPaywall(); };
+
+/* piano di riduzione */
+function planDays(p){ return Math.max(0, Math.round((parseYmd(ymd(new Date()))-parseYmd(p.start))/86400000)); }
+function planLimit(p){ return Math.max(p.target, p.from - Math.floor(planDays(p)/p.every)*p.step); }
+function applyPlan(){
+  var S=state.settings, p=S.plan;
+  if(!p || !p.on || !S.onboarded || !/^\d{4}-\d{2}-\d{2}$/.test(p.start||'')) return;
+  var l=planLimit(p);
+  if(S.limit!==l){ S.limit=l; persistSettings(); renderAll(); }
+}
+function planHtml(S){
+  var h='<section class="sec"><h2>Piano di riduzione'+(proLocked()?'<span class="pro">PRO</span>':'')+'</h2>';
+  if(proLocked()) return h+'<p class="help" style="margin:4px 0 10px">Il limite giornaliero scende da solo, ogni settimana, fino all\'obiettivo che scegli.</p><button class="btn block" data-act="paywall">Scopri di più</button></section>';
+  var p=S.plan;
+  if(p && p.on){
+    var days=planDays(p), next=p.every-(days%p.every), done=S.limit!=null && S.limit<=p.target;
+    return h+'<p class="meta" style="margin:4px 0 10px">Il limite scende di '+p.step+' ogni '+p.every+(p.every===1?' giorno':' giorni')+', fino a '+p.target+'. Limite di oggi: <b>'+(S.limit==null?'—':S.limit)+'</b>'+
+      (done?'. Obiettivo raggiunto.':'. Prossima riduzione tra '+next+(next===1?' giorno.':' giorni.'))+'</p><button class="btn block" data-act="planOff">Disattiva il piano</button></section>';
+  }
+  var from = S.limit!=null ? S.limit : (S.baseline!=null ? S.baseline : '');
+  return h+'<p class="help" style="margin:4px 0 10px">Scegli da dove parti e di quanto scendere. Il limite di ogni giorno si aggiorna da solo.</p>'+
+    '<div class="two"><label class="fld"><span>Parti da (al giorno)</span><input type="number" id="pl-from" inputmode="numeric" min="1" max="99" value="'+esc(from)+'"></label>'+
+    '<label class="fld"><span>Fino a</span><input type="number" id="pl-target" inputmode="numeric" min="0" max="99" value="0"></label></div>'+
+    '<div class="two" style="margin-top:12px"><label class="fld"><span>Scendi di</span><input type="number" id="pl-step" inputmode="numeric" min="1" max="20" value="1"></label>'+
+    '<label class="fld"><span>Ogni (giorni)</span><input type="number" id="pl-every" inputmode="numeric" min="1" max="60" value="7"></label></div>'+
+    '<button class="btn block" style="margin-top:12px" data-act="planOn">Attiva il piano</button></section>';
+}
+
+/* backup automatico su Google Drive (solo Android) */
+var DRIVE_KEY='diario.drive.v1', driveTimer=null;
+function loadDrive(){
+  try{ var j=JSON.parse(localStorage.getItem(DRIVE_KEY)||'null'); if(j) state.drive=Object.assign(state.drive,{connected:!!j.connected,auto:j.auto!==false,at:j.at||null}); }catch(e){}
+}
+function saveDrive(){
+  try{ localStorage.setItem(DRIVE_KEY, JSON.stringify({connected:state.drive.connected,auto:state.drive.auto,at:state.drive.at})); }catch(e){}
+}
+function driveReady(){ return driveAvail() && state.drive.connected && state.drive.auto && !proLocked() && !state.demo; }
+function scheduleDrive(){
+  if(!driveReady()) return;
+  clearTimeout(driveTimer);
+  driveTimer=setTimeout(function(){ driveUpload(false); },90000);
+}
+function exportPayload(pretty){
+  return JSON.stringify({app:'diario-di-un-fumatore',v:2,at:Date.now(),settings:state.settings,days:state.days,notes:state.notes},null,pretty?1:0);
+}
+function driveUpload(manual){
+  clearTimeout(driveTimer); driveTimer=null;
+  if(!driveAvail() || !state.drive.connected || proLocked() || state.demo) return;
+  state.drive.manual=!!manual; state.drive.err=null;
+  nCall('driveUpload',[exportPayload(false), !!manual]);
+}
+window.__menoPause=function(){ if(driveTimer) driveUpload(false); };
+window.__onDrive=function(o){
+  o=o||{}; var d=state.drive;
+  if(o.ev==='auth'){
+    if(o.ok){
+      d.connected=true; d.auto=true; saveDrive(); toast('Google Drive collegato');
+      if(allDates().length===0) nCall('driveFetch'); else driveUpload(true);
+    } else toast('Collegamento a Drive non riuscito'+(o.err?': '+o.err:'.'));
+    renderAll();
+  } else if(o.ev==='upload'){
+    if(o.ok){ d.at=o.at||Date.now(); d.err=null; saveDrive(); if(d.manual) toast('Backup salvato su Drive'); }
+    else { d.err=o.err||'errore'; if(d.manual) toast('Backup su Drive non riuscito'); }
+    d.manual=false;
+    if(state.tab==='impostazioni') renderView();
+  } else if(o.ev==='fetch'){
+    if(!o.ok){ toast('Lettura da Drive non riuscita'); return; }
+    if(!o.exists || !o.json){ toast('Nessun backup su Drive'); return; }
+    var c=null; try{ c=cleanData(JSON.parse(o.json)); }catch(e){}
+    if(!c){ toast('Il backup su Drive non è leggibile'); return; }
+    state.restore={data:c,label:'backup su Drive'+(o.at?' del '+fmtDT.format(new Date(o.at)):''),count:c.count,dayN:Object.keys(c.days).length};
+    if(state.settings.onboarded) state.tab='impostazioni';
+    renderAll(); window.scrollTo(0,0);
+  }
+};
+function driveHtml(){
+  if(!driveAvail()) return '';
+  var d=state.drive, h='<section class="sec"><h2>Backup su Google Drive'+(proLocked()?'<span class="pro">PRO</span>':'')+'</h2>';
+  var why='Una copia dei tuoi dati nel tuo Google Drive, aggiornata da sola dopo ogni modifica. La vede solo questa app: non compare tra i tuoi file.';
+  if(proLocked()) return h+'<p class="help" style="margin:4px 0 10px">'+why+'</p><button class="btn block" data-act="paywall">Scopri di più</button></section>';
+  if(!d.connected) return h+'<p class="help" style="margin:4px 0 10px">'+why+'</p><button class="btn primary block" data-act="driveConnect">Collega Google Drive</button></section>';
+  h+='<p class="store" style="margin:6px 0 10px"><i class="dot"></i><span>Collegato'+(d.at?' · ultimo backup '+esc(fmtDT.format(new Date(d.at))):' · nessun backup ancora')+'</span></p>';
+  if(d.err) h+='<p class="help" style="color:var(--over);margin:0 0 8px">L\'ultimo tentativo non è riuscito. Riprova più tardi.</p>';
+  return h+'<div class="btns"><button class="btn" data-act="driveAuto" aria-pressed="'+d.auto+'">Backup automatico: '+(d.auto?'attivo':'spento')+'</button>'+
+    '<button class="btn primary" data-act="driveNow">Salva ora</button><button class="btn" data-act="driveRestore">Ripristina da Drive</button>'+
+    '<button class="btn ghost" data-act="driveOff">Scollega</button></div></section>';
+}
+function restoreNote(first){
+  var r=state.restore; if(!r) return '';
+  return '<div class="note"><b>Ripristinare?</b> Dal '+esc(r.label)+': '+r.count+' registrazioni in '+r.dayN+' giorni. '+(first?'Verranno importati.':'I dati attuali verranno sostituiti.')+
+    '<div class="btns"><button class="btn danger armed" data-act="doRestore">'+(first?'Importa i dati':'Sostituisci i miei dati')+'</button><button class="btn ghost" data-act="cancelRestore">Annulla</button></div></div>';
+}
+
+/* ---------- aspetto (palette di colori) ---------- */
+var PALETTES = [{"id":"salvia","name":"Salvia","a":"#0B7A69","b":"#F1F5F4"},{"id":"tramonto","name":"Tramonto","a":"#B8471E","b":"#F6F1EF"},{"id":"lavanda","name":"Lavanda","a":"#571EB8","b":"#F1EFF6"},{"id":"oceano","name":"Oceano","a":"#1E70B8","b":"#EFF2F6"},{"id":"rosa","name":"Rosa antico","a":"#B81E57","b":"#F6EFF1"},{"id":"sabbia","name":"Sabbia","a":"#A75C1B","b":"#F4F3F0"}];
+var LOOK_KEY='diario.look.v1', REMIND_KEY='diario.remind.v1', remindTimer=null;
+state.look = {palette:'salvia',mode:'auto'};
+state.remind = {diary:{on:false,t:'21:00'},risk:{on:false}};
+function loadLook(){
+  try{
+    var j=JSON.parse(localStorage.getItem(LOOK_KEY)||'null');
+    if(j && PALETTES.some(function(p){ return p.id===j.palette; })) state.look.palette=j.palette;
+    if(j && ['auto','light','dark'].indexOf(j.mode)>=0) state.look.mode=j.mode;
+  }catch(e){}
+}
+function saveLook(){ try{ localStorage.setItem(LOOK_KEY, JSON.stringify(state.look)); }catch(e){} }
+function effPalette(){ var p=state.look.palette; return (p!=='salvia' && proLocked()) ? 'salvia' : p; }
+function applyLook(){
+  var root=document.documentElement, p=effPalette();
+  if(p==='salvia') root.removeAttribute('data-palette'); else root.setAttribute('data-palette',p);
+  if(state.look.mode==='auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme',state.look.mode);
+  syncChrome();
+}
+/* Dice ad Android di che colore sono le barre di sistema, così coincidono con lo sfondo scelto. */
+function syncChrome(){
+  try{
+    var m=getComputedStyle(document.body).backgroundColor.match(/\d+/g);
+    if(!m || m.length<3) return;
+    var r=+m[0], g=+m[1], b=+m[2];
+    var hex='#'+[r,g,b].map(function(x){ return x.toString(16).padStart(2,'0'); }).join('');
+    nCall('setChrome',[hex, (0.2126*r+0.7152*g+0.0722*b)/255 < 0.5]);
+  }catch(e){}
+}
+if(window.matchMedia){
+  try{ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ setTimeout(syncChrome,50); }); }catch(e){}
+}
+function lookHtml(){
+  var L=state.look, eff=effPalette(), locked=proLocked();
+  var modes=[['auto','Automatico'],['light','Chiaro'],['dark','Scuro']];
+  var h='<section class="sec"><h2>Aspetto</h2><p class="help" style="margin:4px 0 8px">Chiaro o scuro</p><div class="chips" role="group" aria-label="Tema chiaro o scuro">'+
+    modes.map(function(m){ return '<button class="chip'+(L.mode===m[0]?' on':'')+'" data-act="pickMode" data-m="'+m[0]+'" aria-pressed="'+(L.mode===m[0])+'">'+m[1]+'</button>'; }).join('')+'</div>';
+  h+='<p class="help" style="margin:14px 0 8px">Colori'+(locked?'<span class="pro">PRO</span>':'')+'</p><div class="swatches" role="group" aria-label="Palette di colori">'+
+    PALETTES.map(function(p){
+      var lk=locked && p.id!=='salvia';
+      return '<button class="swb'+(eff===p.id?' on':'')+(lk?' lk':'')+'" data-act="'+(lk?'paywall':'pickPalette')+'" data-p="'+p.id+'" aria-pressed="'+(eff===p.id)+'" aria-label="'+esc(p.name)+(lk?', funzione Pro':'')+'">'+
+        '<span class="swd" style="background:linear-gradient(135deg,'+p.b+' 0 50%,'+p.a+' 50% 100%)"></span><span>'+esc(p.name)+'</span></button>';
+    }).join('')+'</div></section>';
+  return h;
+}
+
+/* ---------- promemoria (solo Android: notifiche locali sul telefono) ---------- */
+function loadRemind(){
+  try{
+    var j=JSON.parse(localStorage.getItem(REMIND_KEY)||'null'); if(!j) return;
+    state.remind={diary:{on:!!(j.diary&&j.diary.on),t:(j.diary&&/^\d{2}:\d{2}$/.test(j.diary.t))?j.diary.t:'21:00'},risk:{on:!!(j.risk&&j.risk.on)}};
+  }catch(e){}
+}
+function saveRemind(){ try{ localStorage.setItem(REMIND_KEY, JSON.stringify(state.remind)); }catch(e){} }
+function remindAvail(){ return nCall('remindersAvailable')===true; }
+function ensureNotif(){ if(nCall('canNotify')!==true) nCall('requestNotifPermission'); }
+window.__onNotifPerm=function(ok){ if(!ok) toast('Le notifiche sono spente: attivale dalle impostazioni del telefono.'); };
+function riskHour(){
+  var cutoff=ymd(addDays(new Date(),-29)), c=[], total=0, i;
+  for(i=0;i<24;i++) c.push(0);
+  Object.keys(state.days).forEach(function(d){
+    if(d<cutoff) return;
+    state.days[d].forEach(function(e){ if(isVape(e)) return; var h=parseInt(e.t.slice(0,2),10); if(h>=0&&h<24){ c[h]++; total++; } });
+  });
+  if(total<10) return null;
+  var best=0; c.forEach(function(v,h){ if(v>c[best]) best=h; });
+  return best;
+}
+function riskLabel(h){ return pad(h)+':00–'+pad((h+1)%24)+':00'; }
+function syncReminders(){
+  if(!remindAvail()) return;
+  var R=state.remind, cfg={diary:{on:false},risk:{on:false}}, rh=riskHour();
+  if(!proLocked()){
+    if(R.diary.on){
+      var p=R.diary.t.split(':');
+      cfg.diary={on:true,h:+p[0],m:+p[1],title:'Il tuo diario di oggi',body:'Com\'è andata? Scrivi due righe su impressioni e difficoltà.'};
+    }
+    if(R.risk.on && rh!==null){
+      var mins=rh*60-10; if(mins<0) mins+=1440;
+      cfg.risk={on:true,h:Math.floor(mins/60),m:mins%60,title:'Fra poco è la tua fascia più a rischio',
+        body:'Di solito fumi verso le '+pad(rh)+':00. Bevi un bicchiere d\'acqua o fai due passi: bastano dieci minuti.'};
+    }
+  }
+  nCall('setReminders',[JSON.stringify(cfg)]);
+}
+function scheduleRemind(){
+  if(!remindAvail()) return;
+  clearTimeout(remindTimer);
+  remindTimer=setTimeout(syncReminders,5000);
+}
+function remindHtml(){
+  if(!remindAvail()) return '';
+  var locked=proLocked(), R=state.remind, rh=riskHour();
+  var h='<section class="sec"><h2>Promemoria'+(locked?'<span class="pro">PRO</span>':'')+'</h2>';
+  if(locked) return h+'<p class="help" style="margin:4px 0 10px">Un avviso la sera per scrivere il diario e uno poco prima della fascia in cui fumi di più.</p><button class="btn block" data-act="paywall">Scopri di più</button></section>';
+  h+='<p class="help" style="margin:4px 0 10px">Arrivano anche con l\'app chiusa e restano su questo telefono.</p>'+
+    '<div class="btns"><button class="btn" data-act="remindDiary" aria-pressed="'+R.diary.on+'">Diario serale: '+(R.diary.on?'attivo':'spento')+'</button></div>';
+  if(R.diary.on) h+='<label class="fld" style="margin-top:10px"><span>A che ora</span><input type="time" id="rm-t" value="'+esc(R.diary.t)+'"></label>';
+  h+='<div class="btns"><button class="btn" data-act="remindRisk" aria-pressed="'+R.risk.on+'">Prima della fascia a rischio: '+(R.risk.on?'attivo':'spento')+'</button></div>'+
+    '<p class="help" style="margin:8px 0 0">'+(rh!==null ? 'La tua fascia più a rischio negli ultimi 30 giorni è '+riskLabel(rh)+'. Ti avviso 10 minuti prima.' :
+      'Servono almeno 10 sigarette registrate negli ultimi 30 giorni per riconoscere la fascia.')+'</p>';
+  return h+'</section>';
+}
+
+/* ---------- azioni ---------- */
+function guardDemo(){ if(state.demo){ toast('Esci dall\'anteprima per registrare i tuoi dati.'); return true; } return false; }
+function parseNum(str,dec){
+  var t=String(str).trim().replace(',','.'); if(t==='') return {v:null};
+  var n=Number(t); if(!isFinite(n)||n<0) return {err:true};
+  return {v: dec ? Math.round(n*100)/100 : Math.round(n)};
+}
+function saveSetting(inp){
+  if(guardDemo()){ renderView(); return; }
+  var key=inp.dataset.set;
+  if(key==='first' || key==='last'){
+    state.settings[key]=inp.value.trim().slice(0,40); persistSettings(); toast('Salvato'); return;
+  }
+  var r=parseNum(inp.value, key==='packPrice');
+  if(r.err){ toast('Inserisci un numero valido.'); renderView(); return; }
+  if(key==='packSize' && (r.v===null||r.v<1)) r.v=20;
+  state.settings[key]=r.v; persistSettings(); renderView(); toast('Salvato');
+}
+function csvCell(v){ v=String(v); return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+
+var actions = {
+  tab:function(el){ state.tab=el.dataset.tab; renderAll(); window.scrollTo(0,0); },
+  log:function(el){ if(guardDemo()) return; openSheet({mode:'new',date:el.dataset.date,kind:el.dataset.kind}); },
+  addPast:function(){ if(guardDemo()) return; openSheet({mode:'new',date:ymd(addDays(new Date(),-1))}); },
+  edit:function(el){ if(guardDemo()) return; openSheet({mode:'edit',date:el.dataset.date,id:el.dataset.id}); },
+  toggleDay:function(el){ state.openDay = state.openDay===el.dataset.date ? null : el.dataset.date; renderView(); },
+  setRange:function(el){ state.range=+el.dataset.n; renderView(); },
+  demoOn:function(){ state.demo=true; state.demoData=makeDemo(); state.openDay=null; renderAll(); window.scrollTo(0,0); },
+  demoOff:function(){ state.demo=false; state.demoData=null; state.openDay=null; renderAll(); },
+  saveSetup:function(){
+    var b=parseNum($('#su-base').value), l=parseNum($('#su-lim').value);
+    if(b.err||l.err){ toast('Inserisci numeri validi.'); return; }
+    if(b.v===null&&l.v===null){ toast('Inserisci almeno un valore.'); return; }
+    state.settings.baseline=b.v; state.settings.limit=l.v; persistSettings(); renderView(); toast('Salvato');
+  },
+  addPlace:function(){
+    if(guardDemo()) return;
+    var v=$('#np').value.trim(); if(!v) return;
+    var ps=state.settings.places;
+    if(!ps.some(function(p){ return p.toLowerCase()===v.toLowerCase(); })){ ps.push(v); persistSettings(); }
+    renderView();
+  },
+  delPlace:function(el){
+    if(guardDemo()) return;
+    state.settings.places.splice(+el.dataset.i,1); persistSettings(); renderView();
+  },
+  exportCsv:function(){
+    if(!dl) return;
+    var rows=['data;ora;luogo;importanza;tipo;minuti;prodotto;nicotina_mg'], days=D().days, S=D().settings;
+    Object.keys(days).sort().forEach(function(d){
+      days[d].slice().sort(function(a,b){ return a.t.localeCompare(b.t); }).forEach(function(e){
+        var pr = e.pr ? prodById(S,e.pr) : null, tipo = e.k==='v'?'svapo':(e.k==='h'?'heets':(e.k==='t'?'tabacco':'sigaretta'));
+        rows.push([d,e.t,csvCell(e.p),e.r,tipo,(e.k==='v'?(e.m||0):''),csvCell(pr?prodLabel(pr):''),(e.n!=null?String(e.n).replace('.',','):'')].join(';'));
+      });
+    });
+    if(rows.length===1){ toast('Non ci sono ancora dati da esportare.'); return; }
+    dl.save({filename:'diario-di-un-fumatore-'+ymd(new Date())+'.csv', data:'﻿'+rows.join('\n')}).then(function(r){ if(r && r.status==='saved') toast('File salvato'); })
+      .catch(function(err){ if(err && err.code!=='declined') toast('Esportazione non disponibile qui.'); });
+  },
+  exportJson:function(){
+    if(!dl || guardDemo()) return;
+    var data=exportPayload(true);
+    dl.save({filename:'diario-di-un-fumatore-backup-'+ymd(new Date())+'.json', data:data}).then(function(r){ if(r && r.status==='saved') toast('File salvato'); })
+      .catch(function(err){ if(err && err.code!=='declined') toast('Esportazione non disponibile qui.'); });
+  },
+  backupNow:function(){
+    if(guardDemo()) return;
+    if(!col){ toast('Il backup nel tuo account non è disponibile qui. Scarica il file.'); return; }
+    var ds=allDates(), chunks={}, cnt=0;
+    ds.forEach(function(d){
+      var k='bk-'+d.slice(0,7), c=chunks[k]=chunks[k]||{days:{}};
+      c.days[d]={e:state.days[d]||[],n:state.notes[d]||null}; cnt+=(state.days[d]||[]).length;
+    });
+    var old=state.backup ? Object.keys(state.backup.chunks) : [];
+    var meta={at:Date.now(),days:ds.length,entries:cnt,settings:JSON.parse(JSON.stringify(state.settings))};
+    chains.backup=(chains.backup||Promise.resolve()).then(function(){
+      return Promise.all(old.filter(function(id){ return !chunks[id]; }).map(function(id){ return col.doc(id).delete(); })
+        .concat(Object.keys(chunks).map(function(id){ return col.doc(id).set(Object.assign({updated:Date.now()},chunks[id])); })));
+    }).then(function(){ return col.doc('backup-meta').set(meta); })
+      .then(function(){ toast('Backup salvato nel tuo account'); })
+      .catch(function(err){ console.error(err); toast('Backup non riuscito. Riprova o scarica il file.'); });
+    toast('Salvo il backup…');
+  },
+  restoreCloud:function(){
+    var b=state.backup; if(!b || !b.meta) return;
+    var days={}, notes={};
+    Object.keys(b.chunks).forEach(function(id){
+      var dd=b.chunks[id].days||{};
+      Object.keys(dd).forEach(function(d){
+        var v=dd[d]||{};
+        if(Array.isArray(v.e) && v.e.length) days[d]=v.e;
+        if(v.n && (v.n.i||v.n.d)) notes[d]={i:v.n.i||'',d:v.n.d||''};
+      });
+    });
+    var c=cleanData({days:days,notes:notes,settings:b.meta.settings});
+    if(!c){ toast('Backup non leggibile.'); return; }
+    state.restore={data:c,label:'backup del '+fmtDT.format(new Date(b.meta.at)),count:c.count,dayN:Object.keys(c.days).length};
+    renderView();
+  },
+  doRestore:function(){ if(!state.restore) return; var d=state.restore.data; state.restore=null; applyRestore(d); },
+  cancelRestore:function(){ state.restore=null; renderView(); },
+  addProd:function(){
+    if(guardDemo()) return;
+    if(proLocked() && products(state.settings).length>=2){ openPaywall(); return; }
+    openProd(null);
+  },
+  editProd:function(el){ if(guardDemo()) return; openProd(el.dataset.id); },
+  mainProd:function(el){ if(guardDemo()) return; state.settings.mainId=el.dataset.id; persistSettings(); renderAll(); toast('Prodotto principale cambiato'); },
+  pickPKind:function(el){
+    var k=el.dataset.k; if(psheet.id) return;
+    psheet.k=k; psheet.brand=''; psheet.variant=''; psheet.other=false; psheet.bt=''; psheet.vt='';
+    psheet.nic = k==='h' ? '0,5' : ''; psheet.price=''; psheet.size = k==='t' ? '40' : (k==='e' ? '' : '20');
+    renderProd();
+  },
+  saveProd:function(){ saveProd(); },
+  delProd:function(){
+    if(!psheet.armed){ psheet.armed=true; renderProd(); return; }
+    var S=state.settings; S.products=S.products.filter(function(p){ return p.id!==psheet.id; }); fixSettings(S);
+    persistSettings(); closeSheet(); renderAll(); toast('Prodotto eliminato');
+  },
+  pickProd:function(el){ sheet.pr=el.dataset.id; renderSheet(); },
+  finishOnb:function(){
+    var o=state.onb; if(!onbReady()) return;
+    var b=parseNum(o.baseline), l=parseNum(o.limit);
+    if(b.err||l.err){ toast('Controlla i numeri: usa solo cifre.'); return; }
+    var S=state.settings;
+    S.first=o.first.trim().slice(0,40); S.last=o.last.trim().slice(0,40); S.baseline=b.v; S.limit=l.v; S.onboarded=true;
+    state.onb=null; persistSettings(); renderAll(); window.scrollTo(0,0); toast('Benvenuto, '+S.first);
+  },
+  pickMode:function(el){ state.look.mode=el.dataset.m; saveLook(); applyLook(); renderView(); },
+  pickPalette:function(el){
+    var id=el.dataset.p;
+    if(id!=='salvia' && proLocked()){ openPaywall(); return; }
+    state.look.palette=id; saveLook(); applyLook(); renderView();
+  },
+  remindDiary:function(){
+    if(proLocked()){ openPaywall(); return; }
+    state.remind.diary.on=!state.remind.diary.on; if(state.remind.diary.on) ensureNotif();
+    saveRemind(); syncReminders(); renderView();
+  },
+  remindRisk:function(){
+    if(proLocked()){ openPaywall(); return; }
+    state.remind.risk.on=!state.remind.risk.on; if(state.remind.risk.on) ensureNotif();
+    saveRemind(); syncReminders(); renderView();
+  },
+  paywall:function(){ openPaywall(); },
+  buyPro:function(){ nCall('buy'); },
+  restorePro:function(){ nCall('restorePurchases'); toast('Controllo gli acquisti…'); },
+  driveConnect:function(){ if(proLocked()){ openPaywall(); return; } nCall('driveConnect'); },
+  driveRestoreStart:function(){ if(state.drive.connected) nCall('driveFetch'); else nCall('driveConnect'); },
+  driveNow:function(){ driveUpload(true); toast('Salvo su Drive…'); },
+  driveAuto:function(){ state.drive.auto=!state.drive.auto; saveDrive(); renderView(); },
+  driveRestore:function(){ nCall('driveFetch'); },
+  driveOff:function(){ state.drive.connected=false; saveDrive(); clearTimeout(driveTimer); driveTimer=null; renderView(); toast('Drive scollegato'); },
+  planOn:function(){
+    if(guardDemo() || proLocked()) return;
+    var f=parseNum($('#pl-from').value), t=parseNum($('#pl-target').value), st=parseNum($('#pl-step').value), ev=parseNum($('#pl-every').value);
+    if(f.err||t.err||st.err||ev.err||f.v===null||st.v===null||st.v<1||ev.v===null||ev.v<1){ toast('Controlla i numeri del piano.'); return; }
+    var tg = t.v===null ? 0 : t.v;
+    if(tg>=f.v){ toast('L\'obiettivo deve essere più basso del punto di partenza.'); return; }
+    state.settings.plan={on:true,start:ymd(new Date()),from:f.v,step:st.v,every:ev.v,target:tg};
+    state.settings.limit=f.v; persistSettings(); applyPlan(); renderAll(); toast('Piano attivato');
+  },
+  planOff:function(){ state.settings.plan=null; persistSettings(); renderView(); toast('Piano disattivato'); },
+  closeSheet:function(){ closeSheet(); },
+  pickPlace:function(el){ sheet.pi=+el.dataset.i; sheet.other=false; renderSheet(); },
+  pickOther:function(){ sheet.other=true; sheet.pi=null; renderSheet(); },
+  pickKind:function(el){ sheet.kind=el.dataset.k; renderSheet(); },
+  pickMin:function(el){ sheet.m=el.dataset.v; renderSheet(); },
+  pickR:function(el){
+    sheet.r=+el.dataset.r;
+    document.querySelectorAll('.sc').forEach(function(b){ b.setAttribute('aria-checked', String(+b.dataset.r===sheet.r)); });
+    $('#f-hint').textContent=HINTS[sheet.r-1]; updateSave();
+  },
+  saveSheet:function(){ saveSheet(); },
+  delEntry:function(){
+    if(!sheet.armed){ sheet.armed=true; renderSheet(); return; }
+    var d0=sheet.date0; removeEntry(d0,sheet.id); persistDay(d0);
+    closeSheet(); renderAll(); toast('Voce eliminata');
+  }
+};
+
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-act]'); if(!el) return;
+  var fn=actions[el.dataset.act]; if(fn) fn(el,e);
+});
+
+function noteInput(t){
+  if(state.demo) return;
+  var d=t.dataset.date, k=t.dataset.note, nt=Object.assign({i:'',d:''}, state.notes[d]||{});
+  nt[k]=t.value.slice(0,2000);
+  if(!nt.i.trim() && !nt.d.trim()) delete state.notes[d]; else state.notes[d]=nt;
+  clearTimeout(noteTimers[d]);
+  noteTimers[d]=setTimeout(function(){ noteTimers[d]=null; persistDay(d); },700);
+}
+function flushNote(d){
+  if(noteTimers[d]){ clearTimeout(noteTimers[d]); noteTimers[d]=null; persistDay(d); }
+}
+function onbInput(t){
+  var o=state.onb; if(!o) return;
+  if(t.id==='o-first') o.first=t.value; else if(t.id==='o-last') o.last=t.value;
+  else if(t.id==='o-base') o.baseline=t.value; else if(t.id==='o-lim') o.limit=t.value;
+  updateOnb();
+}
+function prodInput(t){
+  var s=psheet; if(!s) return;
+  if(t.id==='p-bt') s.bt=t.value; else if(t.id==='p-vt') s.vt=t.value;
+  else if(t.id==='p-nic') s.nic=t.value; else if(t.id==='p-price') s.price=t.value; else if(t.id==='p-size') s.size=t.value;
+  else return;
+  updateProdSave();
+}
+function prodSelect(t){
+  var s=psheet; if(!s) return;
+  if(t.dataset.psel==='brand'){
+    if(t.value==='__other'){ s.other=true; s.brand=''; s.variant=''; s.nic=''; }
+    else { s.other=false; s.brand=t.value; s.variant=''; s.nic=''; }
+  } else {
+    s.variant=t.value;
+    var f=(CIG_DB[s.brand]||[]).filter(function(v){ return v[0]===t.value; })[0];
+    s.nic = f ? String(f[1]).replace('.',',') : '';
+  }
+  renderProd();
+}
+function readBackupFile(t){
+  var f=t.files && t.files[0]; if(!f) return;
+  var fr=new FileReader();
+  fr.onload=function(){
+    try{
+      var c=cleanData(JSON.parse(String(fr.result)));
+      if(!c) throw new Error('formato');
+      state.restore={data:c,label:'file '+f.name,count:c.count,dayN:Object.keys(c.days).length};
+      renderView();
+    }catch(err){ toast('File non valido.'); }
+  };
+  fr.onerror=function(){ toast('Non riesco a leggere il file.'); };
+  fr.readAsText(f); t.value='';
+}
+document.addEventListener('input',function(e){
+  var t=e.target;
+  if(t.dataset && t.dataset.note){ noteInput(t); return; }
+  if(t.id && t.id.indexOf('o-')===0){ onbInput(t); return; }
+  if(psheet){ prodInput(t); return; }
+  if(!sheet) return;
+  if(t.id==='f-date') sheet.date=t.value;
+  else if(t.id==='f-time') sheet.t=t.value;
+  else if(t.id==='f-other') sheet.custom=t.value;
+  else if(t.id==='f-min') sheet.m=t.value;
+  else return;
+  updateSave();
+});
+document.addEventListener('change',function(e){
+  var t=e.target;
+  if(t.dataset && t.dataset.set) saveSetting(t);
+  else if(t.dataset && t.dataset.psel) prodSelect(t);
+  else if(t.dataset && t.dataset.note) flushNote(t.dataset.date);
+  else if(t.id==='rf') readBackupFile(t);
+  else if(t.id==='rm-t'){
+    if(/^\d{2}:\d{2}$/.test(t.value)){ state.remind.diary.t=t.value; saveRemind(); syncReminders(); toast('Ora salvata'); }
+  }
+});
+document.addEventListener('focusout',function(e){
+  var t=e.target;
+  if(t.dataset && t.dataset.note){
+    flushNote(t.dataset.date);
+    if(state.pendingRender){ state.pendingRender=false; setTimeout(renderAll,400); }
+  }
+});
+document.addEventListener('keydown',function(e){ if(e.key==='Escape' && (sheet||psheet||state.pw)) closeSheet(); });
+
+setInterval(function(){
+  var el=$('#since'); if(el && !sheet) el.textContent=sinceText();
+},30000);
+
+/* ---------- avvio ---------- */
+loadDrive();
+if(nCall('isPro')===true) state.pro=true;
+loadLook(); loadRemind(); applyLook();
+function webSaver(){
+  return {save:function(o){
+    var file=null;
+    try{ file=new File([o.data],o.filename,{type:o.filename.slice(-5)==='.json'?'application/json':'text/csv'}); }catch(e){}
+    if(file && navigator.canShare && navigator.canShare({files:[file]})){
+      return navigator.share({files:[file],title:o.filename}).then(function(){ return {status:'saved'}; })
+        .catch(function(e){ throw {code:(e && e.name==='AbortError')?'declined':'unavailable'}; });
+    }
+    try{
+      var a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob([o.data],{type:o.filename.slice(-5)==='.json'?'application/json':'text/csv'}));
+      a.download=o.filename; document.body.appendChild(a); a.click(); a.remove();
+      return Promise.resolve({status:'saved'});
+    }catch(e){ return Promise.reject({code:'unavailable'}); }
+  }};
+}
+if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+loadLocal();
+renderAll();
+applyPlan();
+setInterval(applyPlan,600000);
+syncReminders();
+if(window.claude && window.claude.use && !state.settings.onboarded){
+  state.loading=true; renderAll();
+  setTimeout(function(){ if(state.loading){ state.loading=false; renderAll(); } },5000);
+}
+(async function(){
+  try{
+    if(!window.claude || !window.claude.use){ dl=webSaver(); renderAll(); return; }
+    var user = await window.claude.use('user');
+    var db = await window.claude.use('db');
+    var uid = user ? await user.id() : null;
+    if(db && uid){
+      col = db.collection('data/users/'+uid);
+      state.mode='cloud';
+      col.onSnapshot(applySnapshot,function(err){
+        console.error(err); col=null; state.mode='local'; state.loading=false; renderAll();
+      });
+    } else { state.loading=false; }
+    dl = await window.claude.use('downloads');
+    renderAll();
+  }catch(err){ console.error(err); state.loading=false; renderAll(); }
+})();
+})();
+</script>
+
+</body>
+</html>

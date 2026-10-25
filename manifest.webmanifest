@@ -1,0 +1,30 @@
+{
+  "name": "Diario di un fumatore",
+  "short_name": "Diario",
+  "lang": "it",
+  "description": "Tieni traccia delle sigarette e dello svapo mentre smetti di fumare.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F1F5F4",
+  "theme_color": "#F1F5F4",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
